@@ -1,29 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= content_for(:title) || "Coredrift" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta charset="utf-8" />
+    <title><%= content_for?(:title) ? yield(:title) : "CoreDrift" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
+
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%# <%= javascript_include_tag :app, "data-turbo-track": "reload", defer: true %>
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app %>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col">
+    <header class="bg-blue-600 text-white p-4 flex items-center">
+      <div class="mr-4">
+        <%= image_tag 'logo.png', alt: 'Logo', class: 'w-12 h-12' %>
+      </div>
+      <nav class="flex-1">
+        <ul class="flex space-x-5">
+          <li><%= link_to 'Users', users_path, class: 'text-white' %></li>
+          <li><%= link_to 'Roles', roles_path, class: 'text-white' %></li>
+          <li><%= link_to 'Permissions', permissions_path, class: 'text-white' %></li>
+          <li><%= link_to 'Resources', resources_path, class: 'text-white' %></li>
+        </ul>
+      </nav>
+      <div class="ml-auto">
+        <form action="<%= session_path %>" method="post" class="inline">
+          <input type="hidden" name="_method" value="delete">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" class="text-white hover:underline">Logout</button>
+        </form>
+      </div>
+    </header>
+
+    <main class="flex-1 p-4">
       <%= yield %>
     </main>
+
+    <footer class="bg-gray-200 text-center p-4 mt-4">
+      <p>© <%= Time.current.year %> CoreDrift</p>
+      <%# <div class="ml-auto">
+      <%#   <pre class="text-sm text-gray-500">Permissions: <%= session[:permissions] || 'No permissions in session' %></pre>
+      <%# </div> %>
+    </footer>
   </body>
 </html>

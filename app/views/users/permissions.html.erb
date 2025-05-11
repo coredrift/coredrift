@@ -1,0 +1,61 @@
+<% content_for :title, 'Manage Permissions for User' %>
+<div class="space-y-8 p-4">
+  <h1 class="text-2xl font-bold mb-4">Permissions for <strong><%= @user.username %></strong></h1>
+  <% grouped = @user.grouped_permissions %>
+
+  <h2 class="text-xl font-bold mb-2">Assigned</h2>
+  <table class="min-w-full divide-y divide-gray-200 mb-6">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3 bg-white">Name</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3 bg-white">Description</th>
+        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% grouped[:direct].each do |permission| %>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-white border-b border-gray-200"><%= permission['name'] %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-white border-b border-gray-200"><%= permission['description'] %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center bg-white border-b border-gray-200">
+            <%= button_to 'Revoke', revoke_permission_user_path(@user, permission_id: permission['id']), method: :delete, class: 'bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' %>
+          </td>
+        </tr>
+      <% end %>
+      <% grouped[:role_based].each do |permission| %>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-white border-b border-gray-200"><%= permission['name'] %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-white border-b border-gray-200"><%= permission['description'] %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center bg-white border-b border-gray-200">
+            <span class="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded cursor-not-allowed"><%= permission[:source] %></span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2 class="text-xl font-bold mb-2">Unassigned</h2>
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3 bg-white">Name</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3 bg-white">Description</th>
+        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% grouped[:unassigned].each do |permission| %>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-white border-b border-gray-200"><%= permission['name'] %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-white border-b border-gray-200"><%= permission['description'] %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center bg-white border-b border-gray-200">
+            <%= button_to 'Assign', assign_permission_user_path(@user, permission_id: permission['id']), method: :post, class: 'bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div class="flex justify-center mt-6">
+    <%= link_to 'Back', user_path(@user), class: 'bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded' %>
+  </div>
+</div>

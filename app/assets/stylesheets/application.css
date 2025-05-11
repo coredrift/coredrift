@@ -8,3 +8,9 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+input, textarea {
+  padding: 0.5rem; /* Adds padding to all input and textarea elements */
+  border: 1px solid #ccc; /* Optional: Adds a border for better visibility */
+  border-radius: 0.25rem; /* Optional: Adds slight rounding to corners */
+}
