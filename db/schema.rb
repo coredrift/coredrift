@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_10_130342) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_11_075822) do
+# Could not dump table "roles" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
+
   create_table "sessions", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "ip_address"
