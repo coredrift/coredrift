@@ -10,8 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_11_075928) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_11_080256) do
 # Could not dump table "permissions" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
+
+# Could not dump table "resources" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
 
 
