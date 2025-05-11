@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_11_081330) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_11_081430) do
 # Could not dump table "permissions" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
 
@@ -32,6 +32,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_081330) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+# Could not dump table "user_permissions" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
+
 # Could not dump table "user_roles" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
 
@@ -45,6 +49,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_081330) do
   end
 
   add_foreign_key "sessions", "users"
+  add_foreign_key "user_permissions", "permissions"
+  add_foreign_key "user_permissions", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
 end
