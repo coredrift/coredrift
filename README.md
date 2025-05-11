@@ -1,24 +1,28 @@
-# README
+![License: PolyForm Noncommercial](https://img.shields.io/badge/license-PolyForm--Noncommercial-blue)
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# CoreDrift
 
-Things you may want to cover:
+CoreDrift is the foundation of a work-in-progress project. For now, it includes an authentication and authorization system based on the following:
 
-* Ruby version
+- **Users**: Represent individuals who interact with the system.
+- **Roles**: Define a set of permissions that can be assigned to users.
+- **Permissions**: Specify the actions that can be performed within the system.
+- **Resources**: Represent the entities or areas that permissions apply to.
 
-* System dependencies
+Users acquire permissions through their assigned roles and directly, enabling them to access specific resources. Eventually, this logic may be generalized for use in other projects.
 
-* Configuration
+## Screenshots
 
-* Database creation
+Here are some screenshots to give you an idea of how parts of the app look:
 
-* Database initialization
+1. **List Users**
+   ![List Users](docs/img/readme/list-users.png)
 
-* How to run the test suite
+2. **Show User**
+   ![Show User](docs/img/readme/show-user.png)
 
-* Services (job queues, cache servers, search engines, etc.)
+3. **List User Roles**
+   ![List User Roles](docs/img/readme/list-user-roles.png)
 
-* Deployment instructions
-
-* ...
+4. **List User Permissions**
+   ![List User Permissions](docs/img/readme/list-user-permissions.png)

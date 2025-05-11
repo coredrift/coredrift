@@ -54,7 +54,10 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  gem "importmap-rails"
   gem "capybara"
   gem "selenium-webdriver"
 end
 
+
+gem "jsbundling-rails", "~> 1.3"

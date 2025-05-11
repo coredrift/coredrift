@@ -1,0 +1,31 @@
+<% content_for :title, 'Resources' %>
+<div class="space-y-8">
+  <h1 class="text-2xl font-bold mb-6">Resources</h1>
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3 bg-white">Name</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3 bg-white">Description</th>
+        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @resources.each do |resource| %>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-white border-b border-gray-200">
+            <%= link_to resource.name, resource_path(resource), class: 'text-blue-500 hover:underline' %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-white border-b border-gray-200"><%= resource.description %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center space-x-2 flex justify-center bg-white border-b border-gray-200">
+            <%= link_to 'Show', resource_path(resource), class: 'inline-block bg-green-500 text-white px-6 py-2 rounded w-24' %>
+            <%= link_to 'Edit', edit_resource_path(resource), class: 'inline-block bg-yellow-500 text-white px-6 py-2 rounded w-24' %>
+            <%= button_to 'Delete', resource_path(resource), method: :delete, form: { class: 'inline' }, class: 'inline-flex bg-red-500 text-white px-4 py-2 rounded justify-center items-center' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div class="flex justify-center mt-6">
+    <%= link_to 'New', new_resource_path, class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
+  </div>
+</div>

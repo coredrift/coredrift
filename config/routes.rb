@@ -1,8 +1,47 @@
 Rails.application.routes.draw do
+  resource :session, only: [:new, :create, :destroy]
+  delete "session", to: "sessions#destroy", as: :logout
+  get "session", to: "sessions#show"
+
+  # Users routes
+  resources :users do
+    member do
+      get    :roles
+      post   :assign_role
+      delete 'roles/:role_id',       action: :revoke_role,       as: :revoke_role
+
+      get    :permissions
+      post   :assign_permission
+      delete 'permissions/:permission_id',
+             action: :revoke_permission, as: :revoke_permission
+    end
+    resources :roles, only: [:index, :update]
+    resources :permissions, only: [:index, :update]
+  end
+
   get "users/new"
   get "users/create"
-  resource :session
+
   resources :passwords, param: :token
+
+  # menu links
+  resources :roles do
+    member do
+      get :permissions
+      post   :assign_permission
+      delete 'permissions/:permission_id', action: :revoke_permission, as: :revoke_permission
+    end
+  end
+  resources :permissions
+  resources :resources do
+    member do
+      get    :permissions
+      post   :assign_permission
+      delete 'permissions/:permission_id', action: :revoke_permission, as: :revoke_permission
+    end
+  end
+  get "todo", to: "todo#index", as: :todo_index
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -14,5 +53,6 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
+  root "users#index"
   # root "posts#index"
 end

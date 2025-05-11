@@ -31,14 +31,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_083048) do
 #   Unknown type 'uuid' for column 'id'
 
 
-  create_table "sessions", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.string "ip_address"
-    t.string "user_agent"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_sessions_on_user_id"
-  end
+# Could not dump table "sessions" because of following StandardError
+#   Unknown type 'uuid' for column 'user_id'
+
 
 # Could not dump table "user_permissions" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
@@ -48,13 +43,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_083048) do
 #   Unknown type 'uuid' for column 'id'
 
 
-  create_table "users", force: :cascade do |t|
-    t.string "email_address", null: false
-    t.string "password_digest", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["email_address"], name: "index_users_on_email_address", unique: true
-  end
+# Could not dump table "users" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
 
   add_foreign_key "resource_permissions", "permissions"
   add_foreign_key "resource_permissions", "resources"
