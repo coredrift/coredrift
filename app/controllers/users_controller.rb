@@ -1,8 +1,8 @@
 # app/controllers/users_controller.rb
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy,
+  before_action :set_user, only: [ :show, :edit, :update, :destroy,
                                     :roles, :assign_role, :revoke_role,
-                                    :permissions, :assign_permission, :revoke_permission]
+                                    :permissions, :assign_permission, :revoke_permission ]
 
   # GET /users
   def index
@@ -44,7 +44,7 @@ class UsersController < ApplicationController
   # DELETE /users/:id
   def destroy
     @user.destroy
-    redirect_to users_path, notice: 'User was successfully deleted.'
+    redirect_to users_path, notice: "User was successfully deleted."
   end
 
   # GET /users/:id/roles
@@ -58,14 +58,14 @@ class UsersController < ApplicationController
     unless @user.roles.exists?(id: role.id)
       @user.user_roles.create(role: role)
     end
-    redirect_to roles_user_path(@user), notice: 'Role assigned.'
+    redirect_to roles_user_path(@user), notice: "Role assigned."
   end
 
   # DELETE /users/:id/roles/:role_id
   def revoke_role
     role = Role.find(params[:role_id])
     @user.roles.destroy(role)
-    redirect_to roles_user_path(@user), notice: 'Role revoked.'
+    redirect_to roles_user_path(@user), notice: "Role revoked."
   end
 
   # GET /users/:id/permissions
@@ -84,7 +84,7 @@ class UsersController < ApplicationController
       end
     end
     session[:permissions] = @user.all_permissions if @user.id == current_user&.id
-    redirect_to permissions_user_path(@user), notice: 'Permission assigned.'
+    redirect_to permissions_user_path(@user), notice: "Permission assigned."
   end
 
   # DELETE /users/:id/permissions/:permission_id
@@ -93,7 +93,7 @@ class UsersController < ApplicationController
     up = @user.user_permissions.find_by(permission: perm)
     up&.destroy
     session[:permissions] = @user.all_permissions if @user.id == current_user&.id
-    redirect_to permissions_user_path(@user), notice: 'Permission revoked.'
+    redirect_to permissions_user_path(@user), notice: "Permission revoked."
   end
 
   private

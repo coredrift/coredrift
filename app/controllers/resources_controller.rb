@@ -63,6 +63,8 @@ class ResourcesController < ApplicationController
     perm = Permission.find(params[:permission_id])
     rp = @resource.resource_permissions.find_by(permission: perm)
     rp&.destroy
+    Rails.cache.delete("resource_permissions_#{@resource.value}")
+    Rails.logger.debug "Invalidating cache for resource in controller: #{@resource.value}"
     redirect_to permissions_resource_path(@resource), notice: 'Permission revoked.'
   end
 

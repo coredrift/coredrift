@@ -59,3 +59,12 @@ UserPermission.create!(
   created_at: Time.now,
   updated_at: Time.now
 )
+
+# Create an alternative permission for testing roles
+Permission.create!(
+  id: "f7e8c3b6-3c22-44b6-b66c-42eb94edb13e",
+  name: "Alt Access Fake Action",
+  description: "Alternative permission to access test#fake_action for testing roles",
+  created_at: Time.now,
+  updated_at: Time.now
+)
