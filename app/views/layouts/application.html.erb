@@ -31,6 +31,7 @@
           <li><%= link_to 'Roles', roles_path, class: 'text-white' %></li>
           <li><%= link_to 'Permissions', permissions_path, class: 'text-white' %></li>
           <li><%= link_to 'Resources', resources_path, class: 'text-white' %></li>
+          <li><%= link_to 'Test', test_fake_action_path, class: 'text-white' %></li>
         </ul>
       </nav>
       <div class="ml-auto">
@@ -43,14 +44,24 @@
     </header>
 
     <main class="flex-1 p-4">
+      <% if flash[:alert] %>
+        <div class="bg-red-500 text-white p-4 mb-4 rounded">
+          <%= flash[:alert] %>
+        </div>
+      <% end %>
+      <% if flash[:notice] %>
+        <div class="bg-blue-500 text-white p-4 mb-4 rounded">
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
       <%= yield %>
     </main>
 
     <footer class="bg-gray-200 text-center p-4 mt-4">
       <p>© <%= Time.current.year %> CoreDrift</p>
-      <%# <div class="ml-auto">
-      <%#   <pre class="text-sm text-gray-500">Permissions: <%= session[:permissions] || 'No permissions in session' %></pre>
-      <%# </div> %>
+      <div class="ml-auto">
+        <pre class="text-sm text-gray-500">Permissions: <%= session[:permissions] || 'No permissions in session' %></pre>
+      </div>
     </footer>
   </body>
 </html>
