@@ -5,8 +5,8 @@ class CreateResources < ActiveRecord::Migration[8.0]
       t.string :name
       t.text :description
       t.string :label
-      t.string :type
-      t.string :uri
+      t.string :kind # Replaced `type` with `kind` for clarity and to avoid conflicts
+      t.string :value # Column to store additional resource information
       t.string :created_by
       t.string :updated_by
 
