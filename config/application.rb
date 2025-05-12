@@ -20,6 +20,19 @@ module CoreDrift
             g.orm :active_record, primary_key_type: :uuid
         end
 
+        config.logger = ActiveSupport::Logger.new(STDOUT)
+        config.logger.formatter = proc do |severity, datetime, progname, msg|
+            level = {
+                "DEBUG" => "[DBG]",
+                "INFO" => "[INF]",
+                "WARN" => "[WRN]",
+                "ERROR" => "[ERR]",
+                "FATAL" => "[FTL]",
+                "UNKNOWN" => "[UNK]"
+            }[severity] || "[UNK]"
+            "#{level} #{datetime}: #{msg}\n"
+        end
+
         # Configuration for the application, engines, and railties goes here.
         #
         # These settings can be overridden in specific environments using the files

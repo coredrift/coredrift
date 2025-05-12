@@ -8,9 +8,9 @@ class CreateUsers < ActiveRecord::Migration[8.0]
       t.datetime :last_login_at
       t.string   :last_login_ip
       t.boolean  :is_active,       default: true, null: false
+      t.integer  :session_stamp, default: 0, null: false
       t.string   :created_by
       t.string   :updated_by
-      t.integer  :session_stamp, default: 0, null: false
 
       t.timestamps
     end

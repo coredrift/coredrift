@@ -54,7 +54,7 @@ class User < ApplicationRecord
   end
 
   def increment_session_stamp(_record = nil)
-    Rails.logger.debug "[DEBUG] Incrementing session_stamp for user: #{id}"
+    Rails.logger.debug "Incrementing session_stamp for user: #{id}"
     increment!(:session_stamp)
   end
 end
