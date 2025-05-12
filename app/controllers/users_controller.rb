@@ -83,6 +83,7 @@ class UsersController < ApplicationController
         Rails.logger.error "Failed to assign Permission #{perm.id} to User #{@user.id}: #{@user.user_permissions.errors.full_messages.join(', ')}"
       end
     end
+    session[:permissions] = @user.all_permissions if @user.id == current_user&.id
     redirect_to permissions_user_path(@user), notice: 'Permission assigned.'
   end
 
@@ -91,6 +92,7 @@ class UsersController < ApplicationController
     perm = Permission.find(params[:permission_id])
     up = @user.user_permissions.find_by(permission: perm)
     up&.destroy
+    session[:permissions] = @user.all_permissions if @user.id == current_user&.id
     redirect_to permissions_user_path(@user), notice: 'Permission revoked.'
   end
 

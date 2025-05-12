@@ -8,12 +8,20 @@ class ApplicationController < ActionController::Base
   private
 
   def authorize_user
+    return if current_user.nil? # Skip authorization if no user is logged in
+
     # Get the current controller#action
     resource_key = "#{controller_name}##{action_name}"
 
     # Fetch required permissions from cache or database
     required_permissions = Rails.cache.fetch("permissions_for_#{resource_key}", expires_in: 12.hours) do
       Resource.find_by(kind: "controller_action", value: resource_key)&.permissions&.pluck(:name) || []
+    end
+
+    # Check if the permissions version in the session matches the database
+    if session[:session_stamp] != current_user.session_stamp
+      session[:permissions] = current_user.permissions.pluck(:name)
+      session[:session_stamp] = current_user.session_stamp
     end
 
     # Compare with user permissions stored in session

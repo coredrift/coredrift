@@ -8,10 +8,12 @@ class User < ApplicationRecord
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
   has_many :user_roles,       dependent: :destroy
-  has_many :roles, through: :user_roles
+  has_many :roles, through: :user_roles, after_add: :increment_session_stamp, after_remove: :increment_session_stamp
 
   has_many :user_permissions, dependent: :destroy
-  has_many :permissions, through: :user_permissions
+  has_many :permissions, through: :user_permissions, after_add: :increment_session_stamp, after_remove: :increment_session_stamp
+
+  after_save :update_session_stamp_if_permissions_changed
 
   def effective_permissions
     Permission
@@ -41,5 +43,18 @@ class User < ApplicationRecord
         perm.attributes.merge(source: role_names.any? ? "From Role: #{role_names.join(', ')}" : "From Role: Unknown")
       end
     }
+  end
+
+  private
+
+  def update_session_stamp_if_permissions_changed
+    if saved_change_to_attribute?(:permissions)
+      increment!(:session_stamp)
+    end
+  end
+
+  def increment_session_stamp(_record = nil)
+    Rails.logger.debug "[DEBUG] Incrementing session_stamp for user: #{id}"
+    increment!(:session_stamp)
   end
 end
