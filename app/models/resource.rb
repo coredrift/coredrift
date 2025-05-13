@@ -7,7 +7,8 @@ class Resource < ApplicationRecord
   before_create -> { self.id ||= SecureRandom.uuid }
   after_save :invalidate_cache_if_permissions_changed
 
-  validates :kind, presence: true, uniqueness: true
+  validates :kind, presence: true
+  validates :value, presence: true, uniqueness: { scope: :kind, message: "combination of kind and value must be unique" }
 
   private
 

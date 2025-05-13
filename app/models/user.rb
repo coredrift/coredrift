@@ -45,6 +45,11 @@ class User < ApplicationRecord
     }
   end
 
+  # Check if the user is a superadmin based on their username
+  def superadmin?
+    username == 'superadmin'
+  end
+
   private
 
   def update_session_stamp_if_permissions_changed

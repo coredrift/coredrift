@@ -14,3 +14,23 @@ input, textarea {
   border: 1px solid #ccc; /* Optional: Adds a border for better visibility */
   border-radius: 0.25rem; /* Optional: Adds slight rounding to corners */
 }
+
+/* Styles for flash messages */
+.flash-message {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+}
+
+/* Adjusted styles for flash messages to be slightly darker and more saturated */
+.flash-message.notice {
+  background-color: #bce0f5; /* Slightly darker blue */
+  color: #245a72; /* More saturated dark blue text */
+}
+
+.flash-message.alert {
+  background-color: #f5c6c6; /* Slightly darker red */
+  color: #842029; /* More saturated dark red text */
+}
