@@ -1,5 +1,5 @@
 require_relative "boot"
-require_relative '../lib/bootstrapper'
+require_relative "../lib/bootstrapper"
 
 require "rails/all"
 
@@ -17,6 +17,7 @@ module CoreDrift
         # Common ones are `templates`, `generators`, or `middleware`, for example.
         config.autoload_lib(ignore: %w[assets tasks])
 
+        # Ensure UUID is recognized as the default primary key type for all entities
         config.generators do |g|
             g.orm :active_record, primary_key_type: :uuid
         end
@@ -34,12 +35,12 @@ module CoreDrift
             "#{level} #{datetime}: #{msg}\n"
         end
 
-        # Configuration for the application, engines, and railties goes here.
-        #
-        # These settings can be overridden in specific environments using the files
-        # in config/environments, which are processed later.
-        #
-        # config.time_zone = "Central Time (US & Canada)"
-        # config.eager_load_paths << Rails.root.join("extras")
+      # Configuration for the application, engines, and railties goes here.
+      #
+      # These settings can be overridden in specific environments using the files
+      # in config/environments, which are processed later.
+      #
+      # config.time_zone = "Central Time (US & Canada)"
+      # config.eager_load_paths << Rails.root.join("extras")
     end
 end

@@ -13,6 +13,10 @@ class User < ApplicationRecord
   has_many :user_permissions, dependent: :destroy
   has_many :permissions, through: :user_permissions, after_add: :increment_session_stamp, after_remove: :increment_session_stamp
 
+  has_many :organization_owners
+  has_many :owned_organizations, through: :organization_owners, source: :organization
+  belongs_to :organization, optional: true
+
   after_save :update_session_stamp_if_permissions_changed
 
   def effective_permissions

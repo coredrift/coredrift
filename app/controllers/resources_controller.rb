@@ -1,4 +1,5 @@
 class ResourcesController < ApplicationController
+  layout "auth"
   before_action :set_resource, only: [:show, :edit, :update, :destroy,
                                       :permissions, :assign_permission, :revoke_permission]
 

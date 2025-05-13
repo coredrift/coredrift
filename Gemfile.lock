@@ -350,6 +350,7 @@ GEM
     unicode-emoji (4.0.4)
     uri (1.0.3)
     useragent (0.16.11)
+    uuidtools (3.0.0)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -398,6 +399,7 @@ DEPENDENCIES
   tailwindcss-rails
   thruster
   tzinfo-data
+  uuidtools
   web-console
 
 BUNDLED WITH

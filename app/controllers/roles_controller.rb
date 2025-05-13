@@ -1,4 +1,5 @@
 class RolesController < ApplicationController
+  layout "auth"
   before_action :set_role, only: [:show, :edit, :update, :destroy]
 
   # GET /roles

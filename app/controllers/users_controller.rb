@@ -1,5 +1,6 @@
 # app/controllers/users_controller.rb
 class UsersController < ApplicationController
+  layout "auth"
   before_action :set_user, only: [ :show, :edit, :update, :destroy,
                                     :roles, :assign_role, :revoke_role,
                                     :permissions, :assign_permission, :revoke_permission ]
