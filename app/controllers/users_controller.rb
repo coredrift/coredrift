@@ -35,6 +35,12 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/:id
   def update
+    @user = User.find(params[:id])
+
+    if @user.superadmin?
+      params[:user].delete(:username) # Prevent username changes for superadmin
+    end
+
     if @user.update(user_params)
       redirect_to @user, notice: 'User was successfully updated.'
     else
