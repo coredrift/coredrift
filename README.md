@@ -8,6 +8,8 @@ CoreDrift is the foundation of a work-in-progress project. For now, it includes 
 - **Roles**: Define a set of permissions that can be assigned to users.
 - **Permissions**: Specify the actions that can be performed within the system.
 - **Resources**: Represent the entities or areas that permissions apply to.
+- **Organization**: Serve as the umbrella entity that owns all other entities, such as teams, users, and and all entities are scoped under it.
+- **Teams**: Represent user groupings within an organization, allowing logical organization of users for collaboration and management.
 
 Users acquire permissions through their assigned roles and directly, enabling them to access specific resources. Eventually, this logic may be generalized for use in other projects.
 
