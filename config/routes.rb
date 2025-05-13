@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       delete 'permissions/:permission_id', action: :revoke_permission, as: :revoke_permission
     end
   end
+  resources :organizations, only: [:show, :edit, :update]
   get "todo", to: "todo#index", as: :todo_index
 
   get 'test/fake_action', to: 'test#fake_action'
@@ -55,6 +56,6 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  root "users#index"
+  root "home#index"
   # root "posts#index"
 end

@@ -1,68 +1,164 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+require 'uuidtools'
+require 'bcrypt'
 
-# Ensure a superadmin user exists
-superadmin_email = "superadmin@example.com"
-superadmin_password = "securepassword"
+# Generate UUIDs
+superadmin_uuid = UUIDTools::UUID.random_create.to_s
+admin_uuid = UUIDTools::UUID.random_create.to_s
+johndoe_uuid = UUIDTools::UUID.random_create.to_s
+juliasmith_uuid = UUIDTools::UUID.random_create.to_s
+organization_uuid = UUIDTools::UUID.random_create.to_s
 
-superadmin = User.find_or_create_by!(email_address: superadmin_email) do |user|
-  user.password = superadmin_password
-  user.username = "superadmin"
-  puts "Superadmin user created with email: #{superadmin_email}"
+superadmin_role_uuid = UUIDTools::UUID.random_create.to_s
+admin_role_uuid = UUIDTools::UUID.random_create.to_s
+user_role_uuid = UUIDTools::UUID.random_create.to_s
+
+resource_id_1 = UUIDTools::UUID.random_create.to_s
+resource_id_2 = UUIDTools::UUID.random_create.to_s
+permission_id_2 = UUIDTools::UUID.random_create.to_s
+resource_permission_id = UUIDTools::UUID.random_create.to_s
+user_permission_id = UUIDTools::UUID.random_create.to_s
+
+# Generate password hash
+password = BCrypt::Password.create("password123")
+
+# Create users
+User.create!(
+  id: superadmin_uuid,
+  name: 'Super Admin',
+  username: 'superadmin',
+  email_address: 'superadmin@example.com',
+  password_digest: password,
+  role: 'superadmin'
+)
+
+User.create!(
+  id: admin_uuid,
+  name: 'Admin',
+  username: 'admin',
+  email_address: 'admin@example.com',
+  password_digest: password,
+  role: 'admin'
+)
+
+User.create!(
+  id: johndoe_uuid,
+  name: 'John Doe',
+  username: 'johndoe',
+  email_address: 'johndoe@example.com',
+  password_digest: password,
+  role: 'member'
+)
+
+User.create!(
+  id: juliasmith_uuid,
+  name: 'Julia Smith',
+  username: 'juliasmith',
+  email_address: 'juliasmith@example.com',
+  password_digest: password,
+  role: 'member'
+)
+
+# Create organization
+organization = Organization.find_or_create_by!(id: organization_uuid, slug: 'default', name: 'Default Organization') do |org|
+  org.short_description = 'This is the default organization.'
+  org.description = 'This organization is created by default during seeding.'
+  org.owner_id = superadmin_uuid
 end
 
-# Ensure an admin user exists
-admin_email = "admin@example.com"
-admin_password = "adminpassword"
+OrganizationOwner.find_or_create_by!(organization_id: organization_uuid, user_id: superadmin_uuid)
 
-admin = User.find_or_create_by!(email_address: admin_email) do |user|
-  user.password = admin_password
-  user.username = "admin"
-  puts "Admin user created with email: #{admin_email}"
+# Create sessions
+[
+  { user_id: superadmin_uuid, ip_address: "::1", user_agent: "Mozilla/5.0", created_at: Time.now, updated_at: Time.now },
+  { user_id: superadmin_uuid, ip_address: "::1", user_agent: "Mozilla/5.0", created_at: Time.now, updated_at: Time.now }
+].each do |session_data|
+  Session.create!(session_data.merge(id: UUIDTools::UUID.random_create.to_s))
 end
 
-# Ensure a johndoe user exists
-johndoe_email = "johndoe@example.com"
-johndoe_password = "johndoepassword"
+# Create roles
+Role.create!(id: superadmin_role_uuid, name: "Superadmin", description: "Has full access", status: "enabled", created_at: Time.now, updated_at: Time.now)
+Role.create!(id: admin_role_uuid, name: "Admin", description: "Administrative user", status: "enabled", created_at: Time.now, updated_at: Time.now)
+Role.create!(id: user_role_uuid, name: "User", description: "Regular user", status: "enabled", created_at: Time.now, updated_at: Time.now)
 
-johndoe = User.find_or_create_by!(email_address: johndoe_email) do |user|
-  user.password = johndoe_password
-  user.username = "johndoe"
-  puts "John Doe user created with email: #{johndoe_email}"
+# Create meaningful permissions
+permissions = [
+  { name: "Manage-Users", description: "Create, update, and delete any user." },
+  { name: "Configure-System", description: "Change global settings and application preferences." },
+  { name: "View-All-Data", description: "Access all teams, projects, and reports." },
+  { name: "Assign-Roles", description: "Set or modify roles for any user." },
+  { name: "Access-Audit-Logs", description: "View detailed logs of all user activities." },
+  { name: "Manage-Teams", description: "Create teams and manage membership." },
+  { name: "Assign-Tasks", description: "Assign tasks to users within their teams." },
+  { name: "Edit-Projects", description: "Update project details, phases, and structure." },
+  { name: "View-Team-Reports", description: "Access performance and status reports for their teams." },
+  { name: "Comment-Tasks", description: "Participate in task discussions." },
+  { name: "View-Assigned-Tasks", description: "Access tasks assigned to them." },
+  { name: "Update-Task-Status", description: "Change the status of their tasks." },
+  { name: "View-Team-Info", description: "See basic info about their team and members." },
+  { name: "Export-Data", description: "Allow exporting reports or datasets to external formats." },
+  { name: "Impersonate-User", description: "Temporarily access the system as another user for support or debugging." },
+  { name: "Bypass-Restrictions", description: "Override validation or workflow restrictions for exceptional cases." }
+]
+
+permission_records = permissions.map do |perm|
+  Permission.create!(
+    id: UUIDTools::UUID.random_create.to_s,
+    name: perm[:name],
+    description: perm[:description],
+    created_at: Time.now,
+    updated_at: Time.now
+  )
 end
 
-# Ensure a juliasmith user exists
-juliasmith_email = "juliasmith@example.com"
-juliasmith_password = "juliasmithpassword"
+# Define permission sets by role
+admin_permissions = %w[
+  Manage-Users Configure-System View-All-Data Assign-Roles Access-Audit-Logs
+  Manage-Teams Assign-Tasks Edit-Projects View-Team-Reports Comment-Tasks
+  Export-Data Impersonate-User Bypass-Restrictions
+]
 
-juliasmith = User.find_or_create_by!(email_address: juliasmith_email) do |user|
-  user.password = juliasmith_password
-  user.username = "juliasmith"
-  puts "Julia Smith user created with email: #{juliasmith_email}"
+manager_permissions = %w[
+  Manage-Teams Assign-Tasks Edit-Projects View-Team-Reports Comment-Tasks
+]
+
+user_permissions = %w[
+  View-Assigned-Tasks Update-Task-Status Comment-Tasks View-Team-Info
+]
+
+# Helper to find permission ID
+def find_permission_id_by_name(records, name)
+  records.find { |p| p.name == name }&.id
 end
 
-# Create sessions for existing users
-Session.create!({id: 7, user_id: superadmin.id, ip_address: "::1", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36", created_at: "2025-05-12 12:16:36.564162", updated_at: "2025-05-12 12:16:36.564162"})
-Session.create!({id: 11, user_id: superadmin.id, ip_address: "::1", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36", created_at: "2025-05-12 12:26:12.556266", updated_at: "2025-05-12 12:26:12.556266"})
-Role.create!({id: "1d4632e2-e209-4a13-a775-2db0c05aded4", slug: nil, name: "Role", description: "Description", status: "enabled", created_by: nil, updated_by: nil, created_at: "2025-05-12 08:41:49.863488", updated_at: "2025-05-12 08:41:49.863488"})
-Permission.create!({id: "3acc1264-c553-4c40-bf85-23a00f283a3b", slug: nil, name: "FromRole", description: "From Role Description", created_by: nil, updated_by: nil, created_at: "2025-05-12 09:12:58.186654", updated_at: "2025-05-12 12:13:38.503107"})
-Permission.create!({id: "577b2607-a049-4411-9fa4-a53eb0103c8e", slug: nil, name: "Direct", description: "Direct Permission", created_by: nil, updated_by: nil, created_at: "2025-05-12 12:13:52.124169", updated_at: "2025-05-12 12:13:52.124169"})
-Permission.create!({id: "97143a9f-afde-4e5d-aafb-40494ac57862", slug: nil, name: "Second From Role", description: "Second", created_by: nil, updated_by: nil, created_at: "2025-05-12 12:25:42.260662", updated_at: "2025-05-12 12:25:42.260662"})
-Resource.create!({id: "39c7c3b6-3c22-44b6-b66c-42eb94edb13e", slug: nil, name: "Resource", description: "New", label: nil, kind: "controller-name#action-name", value: "controller-name#action-name", created_by: nil, updated_by: nil, created_at: "2025-05-12 09:21:46.718608", updated_at: "2025-05-12 09:22:02.445098"})
-UserRole.create!({id: "7cda9016-84e0-4abd-b764-d5d3de826780", user_id: "a8596275-09d4-4608-9b52-0b6b86446c8e", role_id: "1d4632e2-e209-4a13-a775-2db0c05aded4", created_at: "2025-05-12 13:47:10.773058", updated_at: "2025-05-12 13:47:10.773058"})
-RolePermission.create!({id: "66f68e08-dc39-4702-a82b-7e2bc48436eb", role_id: "1d4632e2-e209-4a13-a775-2db0c05aded4", permission_id: "3acc1264-c553-4c40-bf85-23a00f283a3b", created_at: "2025-05-12 12:10:07.522046", updated_at: "2025-05-12 12:10:07.522046"})
-RolePermission.create!({id: "a74b0a54-e9d8-4427-9ba5-b72ea1cd76e9", role_id: "1d4632e2-e209-4a13-a775-2db0c05aded4", permission_id: "97143a9f-afde-4e5d-aafb-40494ac57862", created_at: "2025-05-12 12:25:51.526641", updated_at: "2025-05-12 12:25:51.526641"})
+# Create RolePermission records
+(admin_permissions + manager_permissions + user_permissions).uniq.each do |perm_name|
+  permission_id = find_permission_id_by_name(permission_records, perm_name)
+  role_ids = []
+  role_ids << superadmin_role_uuid if admin_permissions.include?(perm_name)
+  role_ids << admin_role_uuid if admin_permissions.include?(perm_name) || manager_permissions.include?(perm_name)
+  role_ids << user_role_uuid if user_permissions.include?(perm_name)
 
-# Create a resource for the test controller action
+  role_ids.uniq.each do |role_id|
+    RolePermission.find_or_create_by!(
+      id: UUIDTools::UUID.random_create.to_s,
+      role_id: role_id,
+      permission_id: permission_id
+    )
+  end
+end
+
+# Assign roles to users
+UserRole.create!(user_id: superadmin_uuid, role_id: superadmin_role_uuid)
+UserRole.create!(user_id: admin_uuid, role_id: admin_role_uuid)
+UserRole.create!(user_id: johndoe_uuid, role_id: user_role_uuid)
+UserRole.create!(user_id: juliasmith_uuid, role_id: user_role_uuid)
+
+# Generic resource
+Resource.create!(id: resource_id_1, name: "Resource", description: "New", kind: "controller-name#action-name", value: "controller-name#action-name", created_at: Time.now, updated_at: Time.now)
+
+# Resource for test controller action
 resource = Resource.create!(
-  id: "d3f8c3b6-3c22-44b6-b66c-42eb94edb13e",
+  id: resource_id_2,
   name: "Test Fake Action",
   description: "Resource for testing fake_action",
   kind: "controller_action",
@@ -71,30 +167,29 @@ resource = Resource.create!(
   updated_at: Time.now
 )
 
-# Create a permission for the resource
+# Permission for resource
 permission = Permission.create!(
-  id: "e4f8c3b6-3c22-44b6-b66c-42eb94edb13e",
+  id: permission_id_2,
   name: "Access Fake Action",
   description: "Permission to access test#fake_action",
   created_at: Time.now,
   updated_at: Time.now
 )
 
-# Associate the permission with the resource
+# Link permission to resource
 ResourcePermission.create!(
-  id: "f5f8c3b6-3c22-44b6-b66c-42eb94edb13e",
-  resource: resource,
-  permission: permission,
+  id: resource_permission_id,
+  resource_id: resource.id,
+  permission_id: permission.id,
   created_at: Time.now,
   updated_at: Time.now
 )
 
-# Optionally assign the permission to the admin user
-admin_user = User.find_by(username: "admin")
+# Assign permission directly to admin user (example of user-specific permission)
 UserPermission.create!(
-  id: "g6f8c3b6-3c22-44b6-b66c-42eb94edb13e",
-  user: admin_user,
-  permission: permission,
+  id: user_permission_id,
+  user_id: admin_uuid,
+  permission_id: permission.id,
   created_at: Time.now,
   updated_at: Time.now
 )
