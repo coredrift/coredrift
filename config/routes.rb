@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resource :session, only: [:new, :create, :destroy]
+  resource :session, only: [ :new, :create, :destroy ]
   delete "session", to: "sessions#destroy", as: :logout
   get "session", to: "sessions#show"
 
@@ -8,15 +8,15 @@ Rails.application.routes.draw do
     member do
       get    :roles
       post   :assign_role
-      delete 'roles/:role_id',       action: :revoke_role,       as: :revoke_role
+      delete "roles/:role_id",       action: :revoke_role,       as: :revoke_role
 
       get    :permissions
       post   :assign_permission
-      delete 'permissions/:permission_id',
+      delete "permissions/:permission_id",
              action: :revoke_permission, as: :revoke_permission
     end
-    resources :roles, only: [:index, :update]
-    resources :permissions, only: [:index, :update]
+    resources :roles, only: [ :index, :update ]
+    resources :permissions, only: [ :index, :update ]
   end
 
   get "users/new"
@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     member do
       get :permissions
       post   :assign_permission
-      delete 'permissions/:permission_id', action: :revoke_permission, as: :revoke_permission
+      delete "permissions/:permission_id", action: :revoke_permission, as: :revoke_permission
     end
   end
   resources :permissions
@@ -37,14 +37,14 @@ Rails.application.routes.draw do
     member do
       get    :permissions
       post   :assign_permission
-      delete 'permissions/:permission_id', action: :revoke_permission, as: :revoke_permission
+      delete "permissions/:permission_id", action: :revoke_permission, as: :revoke_permission
     end
   end
-  resources :organizations, only: [:show, :edit, :update]
-  resources :teams, only: [:index, :show, :new, :edit]
+  resources :organizations, only: [ :show, :edit, :update ]
+  resources :teams, only: [ :index, :show, :new, :edit, :update ]
   get "todo", to: "todo#index", as: :todo_index
 
-  get 'test/fake_action', to: 'test#fake_action'
+  get "test/fake_action", to: "test#fake_action"
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

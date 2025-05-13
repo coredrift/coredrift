@@ -20,9 +20,9 @@ class RolesController < ApplicationController
   def create
     @role = Role.new(role_params)
     if @role.save
-      redirect_to @role, notice: "Role was successfully created."
+      redirect_to roles_path, notice: 'Role was successfully created.'
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -32,10 +32,11 @@ class RolesController < ApplicationController
 
   # PATCH/PUT /roles/:id
   def update
+    @role = Role.find(params[:id])
     if @role.update(role_params)
-      redirect_to @role, notice: "Role was successfully updated."
+      redirect_to roles_path, notice: 'Role was successfully updated.'
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
