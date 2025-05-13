@@ -35,7 +35,7 @@
           </ul>
         <% else %>
           <ul class="flex space-x-5">
-            <li><%= link_to 'Core', root_path, class: 'text-white' %></li>
+            <li><%= link_to 'Core', teams_path, class: 'text-white' %></li>
             <li><%= link_to 'Org', organization_path(id: organization_uuid || "default"), class: 'text-white' %></li>
             <li><%= link_to 'Auth', users_path, class: 'text-white' %></li>
           </ul>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_13_130448) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_13_180001) do
 # Could not dump table "organization_owners" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
 
@@ -43,6 +43,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_13_130448) do
 #   Unknown type 'uuid' for column 'user_id'
 
 
+# Could not dump table "team_memberships" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
+
+# Could not dump table "teams" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
+
 # Could not dump table "user_permissions" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
 
@@ -63,6 +71,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_13_130448) do
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "sessions", "users"
+  add_foreign_key "team_memberships", "teams"
+  add_foreign_key "team_memberships", "users"
+  add_foreign_key "teams", "organizations"
   add_foreign_key "user_permissions", "permissions"
   add_foreign_key "user_permissions", "users"
   add_foreign_key "user_roles", "roles"

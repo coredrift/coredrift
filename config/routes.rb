@@ -41,6 +41,7 @@ Rails.application.routes.draw do
     end
   end
   resources :organizations, only: [:show, :edit, :update]
+  resources :teams, only: [:index, :show, :new, :edit]
   get "todo", to: "todo#index", as: :todo_index
 
   get 'test/fake_action', to: 'test#fake_action'
