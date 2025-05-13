@@ -41,7 +41,13 @@ Rails.application.routes.draw do
     end
   end
   resources :organizations, only: [ :show, :edit, :update ]
-  resources :teams, only: [ :index, :show, :new, :edit, :update ]
+  resources :teams, only: [:index, :show, :new, :edit, :update] do
+    member do
+      get :members
+      delete 'members/:user_id', to: 'teams#remove_member', as: :remove_member
+      post 'members/:user_id', to: 'teams#add_member', as: :add_member
+    end
+  end
   get "todo", to: "todo#index", as: :todo_index
 
   get "test/fake_action", to: "test#fake_action"
