@@ -3,14 +3,13 @@ class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
-  before_action :authorize_user
+  before_action :authorize_user, unless: :superadmin_user?
 
   private
 
   def authorize_user
-    return if current_user.nil? # Skip authorization if no user is logged in
+    return if current_user.nil? 
 
-    # Get the current controller#action
     resource_key = "#{controller_name}##{action_name}"
 
     # Fetch required permissions from cache or database
@@ -18,13 +17,11 @@ class ApplicationController < ActionController::Base
       Resource.find_by(kind: "controller_action", value: resource_key)&.permissions&.pluck(:name) || []
     end
 
-    # Check if the permissions version in the session matches the database
     if session[:session_stamp] != current_user.session_stamp
       session[:permissions] = current_user.permissions.pluck(:name)
       session[:session_stamp] = current_user.session_stamp
     end
 
-    # Compare with user permissions stored in session
     user_permissions = session[:permissions] || []
 
     Rails.logger.debug "Resource Key: #{resource_key}"
@@ -35,5 +32,9 @@ class ApplicationController < ActionController::Base
     unless (required_permissions - user_permissions).empty?
       redirect_to root_path, alert: "You are not authorized to access this page."
     end
+  end
+
+  def superadmin_user?
+    current_user&.superadmin?
   end
 end

@@ -26,3 +26,8 @@ Here are some screenshots to give you an idea of how parts of the app look:
 
 4. **List User Permissions**
    ![List User Permissions](docs/img/readme/list-user-permissions.png)
+
+## Notes
+
+- [ ] Ensure the `superadmin` user password is changed after the first login to avoid vulnerabilities. (*) This will be enforced in future updates.
+- [ ] Run `rails db:seed` to initialize the database with required data. (This step may not be necessary in the future, or seeding values will be adjusted appropriately for production.)

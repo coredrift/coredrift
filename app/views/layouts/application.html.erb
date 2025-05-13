@@ -45,13 +45,16 @@
 
     <main class="flex-1 p-4">
       <% if flash[:alert] %>
-        <div class="bg-red-500 text-white p-4 mb-4 rounded">
-          <%= flash[:alert] %>
+        <div id="flash-alert" class="flash-message alert">
+          <span><%= flash[:alert] %></span>
+          <button class="close" onclick="this.parentElement.style.display='none';">✖</button>
         </div>
       <% end %>
+
       <% if flash[:notice] %>
-        <div class="bg-blue-500 text-white p-4 mb-4 rounded">
-          <%= flash[:notice] %>
+        <div id="flash-notice" class="flash-message notice">
+          <span><%= flash[:notice] %></span>
+          <button class="close" onclick="this.parentElement.style.display='none';">✖</button>
         </div>
       <% end %>
       <%= yield %>
@@ -63,5 +66,45 @@
         <pre class="text-sm text-gray-500">Permissions: <%= session[:permissions] || 'No permissions in session' %></pre>
       </div>
     </footer>
+
+    <style>
+      .flash-message {
+        position: relative;
+        padding: 10px 40px 10px 10px; /* Add space for the close button */
+        margin: 10px 0;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+
+      .flash-message .close {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        font-size: 0.9rem; /* Make the close button smaller */
+        cursor: pointer;
+        color: inherit;
+      }
+    </style>
+
+    <script>
+      // Auto-dismiss flash messages after 5 seconds
+      setTimeout(() => {
+        const alert = document.getElementById('flash-alert');
+        const notice = document.getElementById('flash-notice');
+        if (alert) {
+          alert.style.transition = 'opacity 0.5s';
+          alert.style.opacity = '0';
+          setTimeout(() => alert.style.display = 'none', 500); // Wait for fade-out transition
+        }
+        if (notice) {
+          notice.style.transition = 'opacity 0.5s';
+          notice.style.opacity = '0';
+          setTimeout(() => notice.style.display = 'none', 500); // Wait for fade-out transition
+        }
+      }, 5000); // 5 seconds delay
+    </script>
   </body>
 </html>
