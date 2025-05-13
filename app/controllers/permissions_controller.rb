@@ -20,9 +20,9 @@ class PermissionsController < ApplicationController
   def create
     @permission = Permission.new(permission_params)
     if @permission.save
-      redirect_to @permission, notice: "Permission was successfully created."
+      redirect_to permissions_path, notice: 'Permission was successfully created.'
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -32,10 +32,11 @@ class PermissionsController < ApplicationController
 
   # PATCH/PUT /permissions/:id
   def update
+    @permission = Permission.find(params[:id])
     if @permission.update(permission_params)
-      redirect_to @permission, notice: "Permission was successfully updated."
+      redirect_to permissions_path, notice: 'Permission was successfully updated.'
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 

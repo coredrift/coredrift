@@ -21,9 +21,9 @@ class ResourcesController < ApplicationController
   def create
     @resource = Resource.new(resource_params)
     if @resource.save
-      redirect_to @resource, notice: "Resource was successfully created."
+      redirect_to resources_path, notice: 'Resource was successfully created.'
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -33,10 +33,11 @@ class ResourcesController < ApplicationController
 
   # PATCH/PUT /resources/:id
   def update
+    @resource = Resource.find(params[:id])
     if @resource.update(resource_params)
-      redirect_to @resource, notice: "Resource was successfully updated."
+      redirect_to resources_path, notice: 'Resource was successfully updated.'
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
