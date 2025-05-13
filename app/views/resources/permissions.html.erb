@@ -39,7 +39,7 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-white border-b border-gray-200"><%= permission.name %></td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-white border-b border-gray-200"><%= permission.description %></td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center space-x-2 flex justify-center bg-white border-b border-gray-200">
-            <%= button_to 'Assign', assign_permission_resource_path(@resource, permission_id: permission.id), method: :post, class: 'bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded' %>
+            <%= button_to 'Assign', assign_permission_resource_path(@resource, permission_id: permission.id), method: :post, class: 'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded' %>
           </td>
         </tr>
       <% end %>

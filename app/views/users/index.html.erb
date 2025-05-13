@@ -17,7 +17,7 @@
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-white border-b border-gray-200"><%= user.email_address %></td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center space-x-2 flex justify-center bg-white border-b border-gray-200">
-            <%= link_to 'Show', user_path(user), class: 'inline-block bg-green-500 text-white px-6 py-2 rounded w-24' %>
+            <%= link_to 'Show', user_path(user), class: 'inline-block bg-blue-500 hover:bg-blue-700 text-white px-6 py-2 rounded w-24' %>
             <%= link_to 'Edit', edit_user_path(user), class: 'inline-block bg-yellow-500 text-white px-6 py-2 rounded w-24' %>
             <%= button_to 'Delete', user_path(user), method: :delete, form: { class: 'inline' }, class: 'inline-flex bg-red-500 text-white px-4 py-2 rounded justify-center items-center' %>
           </td>
