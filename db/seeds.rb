@@ -193,3 +193,38 @@ UserPermission.create!(
   created_at: Time.now,
   updated_at: Time.now
 )
+
+# Create teams
+team_1_uuid = UUIDTools::UUID.random_create.to_s
+team_2_uuid = UUIDTools::UUID.random_create.to_s
+team_3_uuid = UUIDTools::UUID.random_create.to_s
+
+Team.create!(id: team_1_uuid, organization_id: organization_uuid, slug: 'team-1', name: 'Team 1', description: 'First team in the organization.')
+Team.create!(id: team_2_uuid, organization_id: organization_uuid, slug: 'team-2', name: 'Team 2', description: 'Second team in the organization.')
+Team.create!(id: team_3_uuid, organization_id: organization_uuid, slug: 'team-3', name: 'Team 3', description: 'Third team in the organization.')
+
+# Create additional users and assign them to teams
+(1..15).each do |i|
+  user_uuid = UUIDTools::UUID.random_create.to_s
+  team_id = case i
+            when 1..5 then team_1_uuid
+            when 6..10 then team_2_uuid
+            else team_3_uuid
+            end
+
+  user = User.create!(
+    id: user_uuid,
+    name: "User #{i}",
+    username: "user#{i}",
+    email_address: "user#{i}@example.com",
+    password_digest: password,
+    role: 'member'
+  )
+
+  TeamMembership.create!(
+    id: UUIDTools::UUID.random_create.to_s,
+    team_id: team_id,
+    user_id: user.id,
+    relation_type: 'direct'
+  )
+end

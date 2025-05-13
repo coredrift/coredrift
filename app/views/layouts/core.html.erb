@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : "Core Section" %></title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col">
+    <header class="bg-blue-600 text-white p-4 flex items-center">
+      <div class="mr-4">
+        <%= link_to image_tag('logo.png', alt: 'Logo', class: 'w-12 h-12'), root_path %>
+      </div>
+      <nav class="flex-1">
+        <ul class="flex space-x-5">
+          <li><%= link_to 'Teams', teams_path, class: 'text-white' %></li>
+        </ul>
+      </nav>
+      <div class="ml-auto">
+        <form action="<%= session_path %>" method="post" class="inline">
+          <input type="hidden" name="_method" value="delete">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" class="text-white hover:underline">Logout</button>
+        </form>
+      </div>
+    </header>
+
+    <main class="flex-1 p-4">
+      <%= yield %>
+    </main>
+
+    <footer class="bg-gray-200 text-center p-4 mt-4">
+      <p>© <%= Time.current.year %> CoreDrift</p>
+    </footer>
+  </body>
+</html>
