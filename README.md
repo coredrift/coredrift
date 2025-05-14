@@ -13,22 +13,13 @@ CoreDrift is the foundation of a work-in-progress project. For now, it includes 
 
 Users acquire permissions through their assigned roles and directly, enabling them to access specific resources. Eventually, this logic may be generalized for use in other projects.
 
-## Screenshots
+## Screenshot
 
-Here are some screenshots to give you an idea of how parts of the app look:
+A sample screenshot of the app:
 
-1. **List Users**
-   ![List Users](docs/img/readme/list-users.png)
+![List User Permissions](docs/img/gallery/list-user-permissions.png)
 
-2. **Show User**
-   ![Show User](docs/img/readme/show-user.png)
-
-3. **List User Roles**
-   ![List User Roles](docs/img/readme/list-user-roles.png)
-
-4. **List User Permissions**
-   ![List User Permissions](docs/img/readme/list-user-permissions.png)
-
+[See more screenshots in the gallery...](docs/gallery.md)
 
 ## Seeding for Initial Exploration
 
