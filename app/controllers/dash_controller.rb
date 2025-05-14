@@ -21,4 +21,9 @@ class DashController < ApplicationController
       redirect_to members_team_path(@team), alert: "User #{user.username} is not a member of the team."
     end
   end
+
+  def dash
+    @teams = current_user.teams.includes(:daily_setup)
+    render :dash
+  end
 end
