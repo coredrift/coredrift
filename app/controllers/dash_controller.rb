@@ -1,4 +1,6 @@
 class DashController < ApplicationController
+  layout "core"
+
   def add_member
     @team = Team.find(params[:id])
     user = User.find(params[:user_id])

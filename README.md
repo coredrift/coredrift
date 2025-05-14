@@ -2,41 +2,21 @@
 
 # CoreDrift
 
-CoreDrift is the foundation of a work-in-progress project. For now, it includes an authentication and authorization system based on the following:
+CoreDrift is an async daily stand-up facilitator for distributed teams. It lets everyone share updates on their own schedule, keeps history organized, and includes a simple permissions layer for access control.
 
-- **Users**: Represent individuals who interact with the system.
-- **Roles**: Define a set of permissions that can be assigned to users.
-- **Permissions**: Specify the actions that can be performed within the system.
-- **Resources**: Represent the entities or areas that permissions apply to.
-- **Organization**: Serve as the umbrella entity that owns all other entities, such as teams, users, and and all entities are scoped under it.
-- **Teams**: Represent user groupings within an organization, allowing logical organization of users for collaboration and management.
+## Screenshot
 
-Users acquire permissions through their assigned roles and directly, enabling them to access specific resources. Eventually, this logic may be generalized for use in other projects.
+A sample screenshot of the app:
 
-## Screenshots
+![List User Permissions](docs/img/gallery/list-user-permissions.png)
 
-Here are some screenshots to give you an idea of how parts of the app look:
-
-1. **List Users**
-   ![List Users](docs/img/readme/list-users.png)
-
-2. **Show User**
-   ![Show User](docs/img/readme/show-user.png)
-
-3. **List User Roles**
-   ![List User Roles](docs/img/readme/list-user-roles.png)
-
-4. **List User Permissions**
-   ![List User Permissions](docs/img/readme/list-user-permissions.png)
-
+[See more screenshots in the gallery...](docs/gallery.md)
 
 ## Seeding for Initial Exploration
 
 The seeding process is designed for the initial exploration phase of the application. It creates predefined users, roles, and permissions to help developers and testers understand the system's functionality.
 
 In addition to other users, the following have been created to facilitate manual testing during this phase of development. These users are particularly useful for testing features and verifying permissions.
-
-Below is the list of predefined users and their credentials:
 
 | Role              | Email                              | Password              |
 |-------------------|------------------------------------|-----------------------|
@@ -58,6 +38,5 @@ These credentials are useful for testing and manual verification purposes during
 
 To reset the database and reseed it for testing purposes, you can use the following rake task:
 
-```
+```bash
 rake db:full_reset
-```
