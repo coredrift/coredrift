@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resource :session, only: [ :new, :create, :destroy ]
   delete "session", to: "sessions#destroy", as: :logout
-  get "session", to: "sessions#show"
+  get    "session", to: "sessions#show"
 
   # Users routes
   resources :users do
@@ -15,8 +15,8 @@ Rails.application.routes.draw do
       delete "permissions/:permission_id",
              action: :revoke_permission, as: :revoke_permission
     end
-    resources :roles, only: [ :index, :update ]
-    resources :permissions, only: [ :index, :update ]
+    resources :roles,       only: [:index, :update]
+    resources :permissions, only: [:index, :update]
   end
 
   get "users/new"
@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   # menu links
   resources :roles do
     member do
-      get :permissions
+      get    :permissions
       post   :assign_permission
       delete "permissions/:permission_id", action: :revoke_permission, as: :revoke_permission
     end
@@ -40,15 +40,23 @@ Rails.application.routes.draw do
       delete "permissions/:permission_id", action: :revoke_permission, as: :revoke_permission
     end
   end
+
   resources :organizations, only: [ :show, :edit, :update ]
   resources :teams, only: [:index, :show, :new, :edit, :update] do
     member do
       get :members
       delete 'members/:user_id', to: 'teams#remove_member', as: :remove_member
-      post 'members/:user_id', to: 'teams#add_member', as: :add_member
+      post   'members/:user_id', to: 'teams#add_member',    as: :add_member
     end
     resources :daily_setups, only: [:new, :create, :edit, :update], shallow: true
+
+    # Dailies nested under teams for index/new/create, shallow routes
+    resources :dailies, only: [:index, :new, :create], shallow: true
   end
+
+  # Shallow routes for Dailies show/edit/update/destroy
+  resources :dailies, only: [:show, :edit, :update, :destroy]
+
   get "todo", to: "todo#index", as: :todo_index
 
   get "test/fake_action", to: "test#fake_action"
@@ -67,7 +75,7 @@ Rails.application.routes.draw do
   root "home#index"
   # root "posts#index"
 
-  get '/dash', to: 'dash#dash'
-  get '/dash/add_member', to: 'dash#add_member', as: 'add_member_dash'
+  get '/dash',               to: 'dash#dash'
+  get '/dash/add_member',    to: 'dash#add_member',    as: 'add_member_dash'
   get '/dash/remove_member', to: 'dash#remove_member', as: 'remove_member_dash'
 end
