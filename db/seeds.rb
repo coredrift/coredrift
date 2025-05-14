@@ -1,103 +1,101 @@
 require 'uuidtools'
 require 'bcrypt'
 
-# Generate UUIDs
-superadmin_uuid = UUIDTools::UUID.random_create.to_s
-admin_uuid = UUIDTools::UUID.random_create.to_s
-johndoe_uuid = UUIDTools::UUID.random_create.to_s
-juliasmith_uuid = UUIDTools::UUID.random_create.to_s
-organization_uuid = UUIDTools::UUID.random_create.to_s
-
-superadmin_role_uuid = UUIDTools::UUID.random_create.to_s
-admin_role_uuid = UUIDTools::UUID.random_create.to_s
-user_role_uuid = UUIDTools::UUID.random_create.to_s
-
-resource_id_1 = UUIDTools::UUID.random_create.to_s
-resource_id_2 = UUIDTools::UUID.random_create.to_s
-permission_id_2 = UUIDTools::UUID.random_create.to_s
-resource_permission_id = UUIDTools::UUID.random_create.to_s
-user_permission_id = UUIDTools::UUID.random_create.to_s
-
-# Generate password hash
-password = BCrypt::Password.create("password123")
-
-# Create users
-User.create!(
-  id: superadmin_uuid,
-  name: 'Super Admin',
-  username: 'superadmin',
-  email_address: 'superadmin@example.com',
-  password_digest: password,
-  role: 'superadmin'
-)
-
-User.create!(
-  id: admin_uuid,
-  name: 'Admin',
-  username: 'admin',
-  email_address: 'admin@example.com',
-  password_digest: password,
-  role: 'admin'
-)
-
-User.create!(
-  id: johndoe_uuid,
-  name: 'John Doe',
-  username: 'johndoe',
-  email_address: 'johndoe@example.com',
-  password_digest: password,
-  role: 'member'
-)
-
-User.create!(
-  id: juliasmith_uuid,
-  name: 'Julia Smith',
-  username: 'juliasmith',
-  email_address: 'juliasmith@example.com',
-  password_digest: password,
-  role: 'member'
-)
-
-# Create organization
-organization = Organization.find_or_create_by!(id: organization_uuid, slug: 'default', name: 'Default Organization') do |org|
-  org.short_description = 'This is the default organization.'
-  org.description = 'This organization is created by default during seeding.'
-  org.owner_id = superadmin_uuid
+# ─── UUIDS ─────────────────────────────────────────────────────────────────────
+uuids = {}
+%w[
+  superadmin_user admin_user director_user support_user
+  organization
+  superadmin_role admin_role director_role support_role user_role
+  team_lead_role software_engineer_role designer_role product_owner_role qa_engineer_role devops_engineer_role scrum_master_role business_analyst_role
+].each do |key|
+  uuids[key] = UUIDTools::UUID.random_create.to_s
 end
 
-OrganizationOwner.find_or_create_by!(organization_id: organization_uuid, user_id: superadmin_uuid)
+SEED_UUIDS = uuids
 
-# Create sessions
-[
-  { user_id: superadmin_uuid, ip_address: "::1", user_agent: "Mozilla/5.0", created_at: Time.now, updated_at: Time.now },
-  { user_id: superadmin_uuid, ip_address: "::1", user_agent: "Mozilla/5.0", created_at: Time.now, updated_at: Time.now }
-].each do |session_data|
-  Session.create!(session_data.merge(id: UUIDTools::UUID.random_create.to_s))
+# ─── Passwords ─────────────────────────────────────────────────────────────────
+def password_digest(password)
+  BCrypt::Password.create(password)
 end
 
-# Create roles
-Role.create!(id: superadmin_role_uuid, name: "Superadmin", description: "Has full access", status: "enabled", created_at: Time.now, updated_at: Time.now)
-Role.create!(id: admin_role_uuid, name: "Admin", description: "Administrative user", status: "enabled", created_at: Time.now, updated_at: Time.now)
-Role.create!(id: user_role_uuid, name: "User", description: "Regular user", status: "enabled", created_at: Time.now, updated_at: Time.now)
+def random_password
+  (0...8).map { [*'a'..'z', *'A'..'Z', *'0'..'9'].sample }.join
+end
 
-# Create meaningful permissions
+generated_passwords = {
+  'superadmin_user' => random_password,
+  'admin_user'      => random_password,
+  'director_user'   => random_password
+}
+
+# ─── Global Users ──────────────────────────────────────────────────────────────
+declare_user = ->(uuid, name, username, email, role_sym, password) do
+  User.create!(
+    id: uuid,
+    name: name,
+    username: username,
+    email_address: email,
+    password_digest: password_digest(password),
+    role: role_sym.to_s
+  )
+end
+
+declare_user.call(uuids['superadmin_user'], 'Super Admin', 'superadmin', 'superadmin@example.com', :superadmin, generated_passwords['superadmin_user'])
+declare_user.call(uuids['admin_user'],      'Admin',       'admin',      'admin@example.com',      :admin,      generated_passwords['admin_user'])
+declare_user.call(uuids['director_user'],   'Director',    'director',   'director@example.com',   :director,   generated_passwords['director_user'])
+declare_user.call(uuids['support_user'],    'Tech Support','techsupport','support@example.com',    :support,    "password123")
+
+# ─── Organization ──────────────────────────────────────────────────────────────
+def organization
+  uuids = SEED_UUIDS
+  @org ||= Organization.find_or_create_by!(id: uuids['organization'], slug: 'default', name: 'Default Organization') do |org|
+    org.short_description = 'Default single-instance organization'
+    org.description       = 'Seeded default organization for initial setup.'
+    org.owner_id          = uuids['superadmin_user']
+  end
+end
+
+OrganizationOwner.find_or_create_by!(organization_id: organization.id, user_id: uuids['superadmin_user'])
+
+# ─── Roles ─────────────────────────────────────────────────────────────────────
+roles = {
+  superadmin: uuids['superadmin_role'],
+  admin:      uuids['admin_role'],
+  director:   uuids['director_role'],
+  support:    uuids['support_role'],
+  user:       uuids['user_role'],
+  team_lead:          uuids['team_lead_role'],
+  software_engineer:  uuids['software_engineer_role'],
+  designer:           uuids['designer_role'],
+  product_owner:      uuids['product_owner_role'],
+  qa_engineer:        uuids['qa_engineer_role'],
+  devops_engineer:    uuids['devops_engineer_role'],
+  scrum_master:       uuids['scrum_master_role'],
+  business_analyst:   uuids['business_analyst_role']
+}
+
+roles.each do |name, id|
+  Role.create!(
+    id: id,
+    name: name.to_s.capitalize.gsub('_', ' '),
+    description: "Role: #{name.to_s.capitalize.gsub('_', ' ')}",
+    status: 'enabled',
+    created_at: Time.now,
+    updated_at: Time.now
+  )
+end
+
+# ─── Permissions ───────────────────────────────────────────────────────────────
 permissions = [
-  { name: "Manage-Users", description: "Create, update, and delete any user." },
-  { name: "Configure-System", description: "Change global settings and application preferences." },
-  { name: "View-All-Data", description: "Access all teams, projects, and reports." },
-  { name: "Assign-Roles", description: "Set or modify roles for any user." },
-  { name: "Access-Audit-Logs", description: "View detailed logs of all user activities." },
-  { name: "Manage-Teams", description: "Create teams and manage membership." },
-  { name: "Assign-Tasks", description: "Assign tasks to users within their teams." },
-  { name: "Edit-Projects", description: "Update project details, phases, and structure." },
-  { name: "View-Team-Reports", description: "Access performance and status reports for their teams." },
-  { name: "Comment-Tasks", description: "Participate in task discussions." },
-  { name: "View-Assigned-Tasks", description: "Access tasks assigned to them." },
-  { name: "Update-Task-Status", description: "Change the status of their tasks." },
-  { name: "View-Team-Info", description: "See basic info about their team and members." },
-  { name: "Export-Data", description: "Allow exporting reports or datasets to external formats." },
-  { name: "Impersonate-User", description: "Temporarily access the system as another user for support or debugging." },
-  { name: "Bypass-Restrictions", description: "Override validation or workflow restrictions for exceptional cases." }
+  { name: 'Admin System',           description: 'Almost superadmin rights with system control' },
+  { name: 'Manage Auth',            description: 'Manage user authentication and roles' },
+  { name: 'Manage Team',            description: 'Create and update teams and memberships' },
+  { name: 'Send Daily Report',      description: 'Submit your asynchronous daily standup report' },
+  { name: 'Create Ticket',          description: 'Create new tickets in the system' },
+  { name: 'Generate Team Report',   description: 'Generate report for a specific team' },
+  { name: 'Generate Org Report',    description: 'Generate report for the entire organization' },
+  { name: 'Export Data',            description: 'Export data to external formats' }
 ]
 
 permission_records = permissions.map do |perm|
@@ -110,121 +108,125 @@ permission_records = permissions.map do |perm|
   )
 end
 
-# Define permission sets by role
-admin_permissions = %w[
-  Manage-Users Configure-System View-All-Data Assign-Roles Access-Audit-Logs
-  Manage-Teams Assign-Tasks Edit-Projects View-Team-Reports Comment-Tasks
-  Export-Data Impersonate-User Bypass-Restrictions
-]
+# ─── Permissions → Roles ───────────────────────────────────────────────────────
+role_map = {
+  superadmin:      permission_records.map(&:id),
+  admin:           permission_records.select { |p| p.name == 'Admin System' }.map(&:id),
+  director:        permission_records.select { |p| p.name == 'Manage Auth' }.map(&:id),
+  team_lead:       permission_records.select { |p| p.name == 'Manage Team' }.map(&:id),
+  scrum_master:    permission_records.select { |p| p.name == 'Send Daily Report' }.map(&:id),
+  business_analyst: permission_records.select { |p| ['Generate Team Report', 'Generate Org Report', 'Export Data'].include?(p.name) }.map(&:id)
+}
 
-manager_permissions = %w[
-  Manage-Teams Assign-Tasks Edit-Projects View-Team-Reports Comment-Tasks
-]
-
-user_permissions = %w[
-  View-Assigned-Tasks Update-Task-Status Comment-Tasks View-Team-Info
-]
-
-# Helper to find permission ID
-def find_permission_id_by_name(records, name)
-  records.find { |p| p.name == name }&.id
-end
-
-# Create RolePermission records
-(admin_permissions + manager_permissions + user_permissions).uniq.each do |perm_name|
-  permission_id = find_permission_id_by_name(permission_records, perm_name)
-  role_ids = []
-  role_ids << superadmin_role_uuid if admin_permissions.include?(perm_name)
-  role_ids << admin_role_uuid if admin_permissions.include?(perm_name) || manager_permissions.include?(perm_name)
-  role_ids << user_role_uuid if user_permissions.include?(perm_name)
-
-  role_ids.uniq.each do |role_id|
+role_map.each do |role_sym, perm_ids|
+  role_id = roles[role_sym]
+  perm_ids.each do |pid|
     RolePermission.find_or_create_by!(
       id: UUIDTools::UUID.random_create.to_s,
       role_id: role_id,
-      permission_id: permission_id
+      permission_id: pid
     )
   end
 end
 
-# Assign roles to users
-UserRole.create!(user_id: superadmin_uuid, role_id: superadmin_role_uuid)
-UserRole.create!(user_id: admin_uuid, role_id: admin_role_uuid)
-UserRole.create!(user_id: johndoe_uuid, role_id: user_role_uuid)
-UserRole.create!(user_id: juliasmith_uuid, role_id: user_role_uuid)
+# ─── Assign Global Roles to Global Users ───────────────────────────────────────
+UserRole.create!(user_id: uuids['superadmin_user'], role_id: roles[:superadmin])
+UserRole.create!(user_id: uuids['admin_user'],      role_id: roles[:admin])
+UserRole.create!(user_id: uuids['director_user'],   role_id: roles[:director])
+UserRole.create!(user_id: uuids['support_user'],    role_id: roles[:support])
 
-# Generic resource
-Resource.create!(id: resource_id_1, name: "Resource", description: "New", kind: "controller-name#action-name", value: "controller-name#action-name", created_at: Time.now, updated_at: Time.now)
+# ─── Equipos de desarrollo ─────────────────────────────────────────────────────
+team_structure = {
+  team_lead:          1,
+  software_engineer:  2,
+  designer:           1,
+  product_owner:      1,
+  qa_engineer:        1,
+  devops_engineer:    1,
+  scrum_master:       1,
+  business_analyst:   1
+}
 
-# Resource for test controller action
-resource = Resource.create!(
-  id: resource_id_2,
-  name: "Test Fake Action",
-  description: "Resource for testing fake_action",
-  kind: "controller_action",
-  value: "test#fake_action",
-  created_at: Time.now,
-  updated_at: Time.now
+3.times do |t|
+  team_uuid = UUIDTools::UUID.random_create.to_s
+  team = Team.create!(
+    id:             team_uuid,
+    organization_id: organization.id,
+    slug:           "team-#{t+1}",
+    name:           "Team #{t+1}",
+    description:    "Cross-functional Team #{t+1}"
+  )
+
+  team_structure.each do |role_sym, count|
+    count.times do |i|
+      user_uuid = UUIDTools::UUID.random_create.to_s
+      name = "Team#{t+1} #{role_sym.to_s.split('_').map(&:capitalize).join(' ')} #{i+1}"
+      username = "team-#{t+1}-#{role_sym.to_s.gsub('_', '-')}-#{i+1}"
+      email = "#{username}@example.com"
+
+      User.create!(
+        id:              user_uuid,
+        name:            name,
+        username:        username,
+        email_address:   email,
+        password_digest: password_digest("password123"),
+        role:            role_sym.to_s
+      )
+
+      TeamMembership.create!(
+        id:           UUIDTools::UUID.random_create.to_s,
+        team_id:      team_uuid,
+        user_id:      user_uuid,
+        relation_type:'direct'
+      )
+
+      UserRole.create!(user_id: user_uuid, role_id: roles[role_sym])
+    end
+  end
+end
+
+# ─── Test Dataset (Test Team) ──────────────────────────────────────────────────
+# This section is for development convenience only during early phases.
+test_team_id = UUIDTools::UUID.random_create.to_s
+Team.create!(
+  id: test_team_id,
+  organization_id: organization.id,
+  slug: 'test-team',
+  name: 'Test Team',
+  description: 'Temporary test team for development purposes'
 )
 
-# Permission for resource
-permission = Permission.create!(
-  id: permission_id_2,
-  name: "Access Fake Action",
-  description: "Permission to access test#fake_action",
-  created_at: Time.now,
-  updated_at: Time.now
-)
+test_roles = %i[team_lead software_engineer designer product_owner qa_engineer devops_engineer scrum_master business_analyst]
 
-# Link permission to resource
-ResourcePermission.create!(
-  id: resource_permission_id,
-  resource_id: resource.id,
-  permission_id: permission.id,
-  created_at: Time.now,
-  updated_at: Time.now
-)
+test_roles.each do |role_sym|
+  username = "test-#{role_sym.to_s.gsub('_', '-')}"
+  user_id = UUIDTools::UUID.random_create.to_s
 
-# Assign permission directly to admin user (example of user-specific permission)
-UserPermission.create!(
-  id: user_permission_id,
-  user_id: admin_uuid,
-  permission_id: permission.id,
-  created_at: Time.now,
-  updated_at: Time.now
-)
-
-# Create teams
-team_1_uuid = UUIDTools::UUID.random_create.to_s
-team_2_uuid = UUIDTools::UUID.random_create.to_s
-team_3_uuid = UUIDTools::UUID.random_create.to_s
-
-Team.create!(id: team_1_uuid, organization_id: organization_uuid, slug: 'team-1', name: 'Team 1', description: 'First team in the organization.')
-Team.create!(id: team_2_uuid, organization_id: organization_uuid, slug: 'team-2', name: 'Team 2', description: 'Second team in the organization.')
-Team.create!(id: team_3_uuid, organization_id: organization_uuid, slug: 'team-3', name: 'Team 3', description: 'Third team in the organization.')
-
-# Create additional users and assign them to teams
-(1..15).each do |i|
-  user_uuid = UUIDTools::UUID.random_create.to_s
-  team_id = case i
-            when 1..5 then team_1_uuid
-            when 6..10 then team_2_uuid
-            else team_3_uuid
-            end
-
-  user = User.create!(
-    id: user_uuid,
-    name: "User #{i}",
-    username: "user#{i}",
-    email_address: "user#{i}@example.com",
-    password_digest: password,
-    role: 'member'
+  User.create!(
+    id: user_id,
+    name: username.split('-').map(&:capitalize).join(' '),
+    username: username,
+    email_address: "#{username}@example.com",
+    password_digest: password_digest(username),
+    role: role_sym.to_s
   )
 
   TeamMembership.create!(
     id: UUIDTools::UUID.random_create.to_s,
-    team_id: team_id,
-    user_id: user.id,
+    team_id: test_team_id,
+    user_id: user_id,
     relation_type: 'direct'
   )
+
+  UserRole.create!(
+    user_id: user_id,
+    role_id: roles[role_sym]
+  )
+end
+
+# ─── Print passwords for privileged users ──────────────────────────────────────
+puts "\nGenerated passwords for privileged users:"
+generated_passwords.each do |user_key, pw|
+  username = user_key.gsub('_user', '')
+  puts "  #{username}: #{pw}"
 end
