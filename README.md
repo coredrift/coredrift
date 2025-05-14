@@ -2,16 +2,7 @@
 
 # CoreDrift
 
-CoreDrift is the foundation of a work-in-progress project. For now, it includes an authentication and authorization system based on the following:
-
-- **Users**: Represent individuals who interact with the system.
-- **Roles**: Define a set of permissions that can be assigned to users.
-- **Permissions**: Specify the actions that can be performed within the system.
-- **Resources**: Represent the entities or areas that permissions apply to.
-- **Organization**: Serve as the umbrella entity that owns all other entities, such as teams, users, and and all entities are scoped under it.
-- **Teams**: Represent user groupings within an organization, allowing logical organization of users for collaboration and management.
-
-Users acquire permissions through their assigned roles and directly, enabling them to access specific resources. Eventually, this logic may be generalized for use in other projects.
+CoreDrift is an async daily stand-up facilitator for distributed teams. It lets everyone share updates on their own schedule, keeps history organized, and includes a simple permissions layer for access control.
 
 ## Screenshot
 
@@ -26,8 +17,6 @@ A sample screenshot of the app:
 The seeding process is designed for the initial exploration phase of the application. It creates predefined users, roles, and permissions to help developers and testers understand the system's functionality.
 
 In addition to other users, the following have been created to facilitate manual testing during this phase of development. These users are particularly useful for testing features and verifying permissions.
-
-Below is the list of predefined users and their credentials:
 
 | Role              | Email                              | Password              |
 |-------------------|------------------------------------|-----------------------|
@@ -49,6 +38,5 @@ These credentials are useful for testing and manual verification purposes during
 
 To reset the database and reseed it for testing purposes, you can use the following rake task:
 
-```
+```bash
 rake db:full_reset
-```
