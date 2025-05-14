@@ -25,29 +25,31 @@
       <div class="mr-4">
         <%= link_to image_tag('logo.png', alt: 'Logo', class: 'w-12 h-12'), root_path %>
       </div>
-      <nav class="flex-1">
-        <% if current_page?(users_path) %>
-          <ul class="flex space-x-5">
-            <li><%= link_to 'Users', users_path, class: 'text-white' %></li>
-            <li><%= link_to 'Roles', roles_path, class: 'text-white' %></li>
-            <li><%= link_to 'Permissions', permissions_path, class: 'text-white' %></li>
-            <li><%= link_to 'Resources', resources_path, class: 'text-white' %></li>
-          </ul>
-        <% else %>
-          <ul class="flex space-x-5">
-            <li><%= link_to 'Core', teams_path, class: 'text-white' %></li>
-            <li><%= link_to 'Org', organization_path(id: organization_uuid || "default"), class: 'text-white' %></li>
-            <li><%= link_to 'Auth', users_path, class: 'text-white' %></li>
-          </ul>
-        <% end %>
-      </nav>
-      <div class="ml-auto">
-        <form action="<%= session_path %>" method="post" class="inline">
-          <input type="hidden" name="_method" value="delete">
-          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-          <button type="submit" class="text-white hover:underline">Logout</button>
-        </form>
-      </div>
+      <% if current_user %>
+        <nav class="flex-1">
+          <% if current_page?(users_path) %>
+            <ul class="flex space-x-5">
+              <li><%= link_to 'Users', users_path, class: 'text-white' %></li>
+              <li><%= link_to 'Roles', roles_path, class: 'text-white' %></li>
+              <li><%= link_to 'Permissions', permissions_path, class: 'text-white' %></li>
+              <li><%= link_to 'Resources', resources_path, class: 'text-white' %></li>
+            </ul>
+          <% else %>
+            <ul class="flex space-x-5">
+              <li><%= link_to 'Core', teams_path, class: 'text-white' %></li>
+              <li><%= link_to 'Org', organization_path(id: organization_uuid || "default"), class: 'text-white' %></li>
+              <li><%= link_to 'Auth', users_path, class: 'text-white' %></li>
+            </ul>
+          <% end %>
+        </nav>
+        <div class="ml-auto">
+          <form action="<%= session_path %>" method="post" class="inline">
+            <input type="hidden" name="_method" value="delete">
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <button type="submit" class="text-white hover:underline">Logout</button>
+          </form>
+        </div>
+      <% end %>
     </header>
 
     <main class="flex-1 p-4">
