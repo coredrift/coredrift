@@ -1,0 +1,78 @@
+<div class="max-w-3xl mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+  <h1 class="text-2xl font-bold mb-6 text-center">Edit Daily Setup</h1>
+
+  <%= form_with model: @daily_setup, url: daily_setup_path(@daily_setup), method: :patch, local: true do |form| %>
+    <div class="mb-4 hidden">
+      <%= form.label :slug, "Slug", class: "block text-gray-700 font-bold mb-2" %>
+      <%= form.text_field :slug, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", disabled: true %>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :name, "Name", class: "block text-gray-700 font-bold mb-2" %>
+      <%= form.text_field :name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :description, "Description", class: "block text-gray-700 font-bold mb-2" %>
+      <%= form.text_area :description, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="mb-4">
+        <%= form.label :visible_at, "Visible At", class: "block text-gray-700 font-bold mb-2" %>
+        <%= form.time_field :visible_at, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+      </div>
+
+      <div class="mb-4">
+        <%= form.label :reminder_at, "Reminder At", class: "block text-gray-700 font-bold mb-2" %>
+        <%= form.time_field :reminder_at, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="mb-4">
+        <%= form.label :template, "Template", class: "block text-gray-700 font-bold mb-2" %>
+        <%= form.select :template, options_for_select([["Freeform", "freeform"], ["Yesterday-Today-Blockers", "yesterday_today_blockers"]], @daily_setup.template), class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+      </div>
+
+      <div class="mb-4">
+        <%= form.label :daily_report_time, "Daily Report Time", class: "block text-gray-700 font-bold mb-2" %>
+        <%= form.time_field :daily_report_time, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="mb-4">
+        <%= form.label :weekly_report_day, "Weekly Report Day", class: "block text-gray-700 font-bold mb-2" %>
+        <%= form.select :weekly_report_day, options_for_select(["mon", "tue", "wed", "thu", "fri", "sat", "sun"], @daily_setup.weekly_report_day), class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+      </div>
+
+      <div class="mb-4">
+        <%= form.label :weekly_report_time, "Weekly Report Time", class: "block text-gray-700 font-bold mb-2" %>
+        <%= form.time_field :weekly_report_time, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="mb-4 col-span-2 text-right">
+        <%= form.label :allow_comments, "Allow Comments", class: "block text-gray-700 font-bold mb-2" %>
+        <%= form.check_box :allow_comments, class: "mr-2 leading-tight" %>
+      </div>
+
+      <div class="mb-4 col-span-2 text-right">
+        <%= form.label :active, "Active", class: "block text-gray-700 font-bold mb-2" %>
+        <%= form.check_box :active, class: "mr-2 leading-tight" %>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :settings, "Settings - Experimental", class: "block text-gray-700 font-bold mb-2" %>
+      <%= form.text_area :settings, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+    </div>
+
+    <div class="flex items-center justify-end space-x-4">
+      <%= link_to 'Back', dash_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
+      <%= form.submit "Update", class: "bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" %>
+    </div>
+  <% end %>
+</div>

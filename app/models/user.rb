@@ -17,6 +17,9 @@ class User < ApplicationRecord
   has_many :owned_organizations, through: :organization_owners, source: :organization
   belongs_to :organization, optional: true
 
+  has_many :team_memberships, dependent: :destroy
+  has_many :teams, through: :team_memberships
+
   after_save :update_session_stamp_if_permissions_changed
 
   def effective_permissions

@@ -1,0 +1,67 @@
+<h1 class="text-2xl font-bold mb-4">New Daily Setup</h1>
+
+<%= form_with model: @daily_setup, url: daily_setups_path, local: true do |form| %>
+  <div class="mb-4">
+    <%= form.label :slug, "Slug", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.text_field :slug, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :name, "Name", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.text_field :name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :description, "Description", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.text_area :description, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :visible_at, "Visible At", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.time_field :visible_at, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :reminder_at, "Reminder At", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.time_field :reminder_at, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :daily_report_time, "Daily Report Time", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.time_field :daily_report_time, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :weekly_report_day, "Weekly Report Day", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.select :weekly_report_day, options_for_select(["mon", "tue", "wed", "thu", "fri", "sat", "sun"], @daily_setup.weekly_report_day), class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :weekly_report_time, "Weekly Report Time", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.time_field :weekly_report_time, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :template, "Template", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.text_field :template, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :allow_comments, "Allow Comments", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.check_box :allow_comments, class: "mr-2 leading-tight" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :active, "Active", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.check_box :active, class: "mr-2 leading-tight" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :settings, "Settings", class: "block text-gray-700 font-bold mb-2" %>
+    <%= form.text_area :settings, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="flex items-center justify-between">
+    <%= form.submit "Create Daily Setup", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+  </div>
+<% end %>

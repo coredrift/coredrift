@@ -47,6 +47,7 @@ Rails.application.routes.draw do
       delete 'members/:user_id', to: 'teams#remove_member', as: :remove_member
       post 'members/:user_id', to: 'teams#add_member', as: :add_member
     end
+    resources :daily_setups, only: [:new, :create, :edit, :update], shallow: true
   end
   get "todo", to: "todo#index", as: :todo_index
 
@@ -66,7 +67,7 @@ Rails.application.routes.draw do
   root "home#index"
   # root "posts#index"
 
-  get '/dash', to: 'home#dash'
+  get '/dash', to: 'dash#dash'
   get '/dash/add_member', to: 'dash#add_member', as: 'add_member_dash'
   get '/dash/remove_member', to: 'dash#remove_member', as: 'remove_member_dash'
 end
