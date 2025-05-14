@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
     if user = User.authenticate_by(params.permit(:email_address, :password))
       start_new_session_for user
       session[:permissions] = user.all_permissions # Cache user permissions in the session
-      redirect_to after_authentication_url
+      redirect_to root_path
     else
       redirect_to new_session_path, alert: "Try another email address or password."
     end

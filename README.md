@@ -29,7 +29,35 @@ Here are some screenshots to give you an idea of how parts of the app look:
 4. **List User Permissions**
    ![List User Permissions](docs/img/readme/list-user-permissions.png)
 
+
+## Seeding for Initial Exploration
+
+The seeding process is designed for the initial exploration phase of the application. It creates predefined users, roles, and permissions to help developers and testers understand the system's functionality.
+
+In addition to other users, the following have been created to facilitate manual testing during this phase of development. These users are particularly useful for testing features and verifying permissions.
+
+Below is the list of predefined users and their credentials:
+
+| Role              | Email                              | Password              |
+|-------------------|------------------------------------|-----------------------|
+| Team Lead         | test-team-lead@example.com         | test-team-lead        |
+| Software Engineer | test-software-engineer@example.com | test-software-engineer|
+| Designer          | test-designer@example.com          | test-designer         |
+| Product Owner     | test-product-owner@example.com     | test-product-owner    |
+| QA Engineer       | test-qa-engineer@example.com       | test-qa-engineer      |
+| DevOps Engineer   | test-devops-engineer@example.com   | test-devops-engineer  |
+| Scrum Master      | test-scrum-master@example.com      | test-scrum-master     |
+| Business Analyst  | test-business-analyst@example.com  | test-business-analyst |
+
+These credentials are useful for testing and manual verification purposes during development.
+
 ## Notes
 
 - [ ] Ensure the `superadmin` user password is changed after the first login to avoid vulnerabilities. (*) This will be enforced in future updates.
 - [ ] Run `rails db:seed` to initialize the database with required data. (This step may not be necessary in the future, or seeding values will be adjusted appropriately for production.)
+
+To reset the database and reseed it for testing purposes, you can use the following rake task:
+
+```
+rake db:full_reset
+```

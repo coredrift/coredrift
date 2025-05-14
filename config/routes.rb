@@ -65,4 +65,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#index"
   # root "posts#index"
+
+  get '/dash', to: 'home#dash'
+  get '/dash/add_member', to: 'dash#add_member', as: 'add_member_dash'
+  get '/dash/remove_member', to: 'dash#remove_member', as: 'remove_member_dash'
 end
