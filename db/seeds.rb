@@ -20,7 +20,7 @@ def password_digest(password)
 end
 
 def random_password
-  (0...8).map { [*'a'..'z', *'A'..'Z', *'0'..'9'].sample }.join
+  (0...8).map { [ *'a'..'z', *'A'..'Z', *'0'..'9' ].sample }.join
 end
 
 generated_passwords = {
@@ -44,7 +44,7 @@ end
 declare_user.call(uuids['superadmin_user'], 'Super Admin', 'superadmin', 'superadmin@example.com', :superadmin, generated_passwords['superadmin_user'])
 declare_user.call(uuids['admin_user'],      'Admin',       'admin',      'admin@example.com',      :admin,      generated_passwords['admin_user'])
 declare_user.call(uuids['director_user'],   'Director',    'director',   'director@example.com',   :director,   generated_passwords['director_user'])
-declare_user.call(uuids['support_user'],    'Tech Support','techsupport','support@example.com',    :support,    "password123")
+declare_user.call(uuids['support_user'],    'Tech Support', 'techsupport', 'support@example.com',    :support,    "password123")
 
 # ─── Organization ──────────────────────────────────────────────────────────────
 def organization
@@ -115,7 +115,7 @@ role_map = {
   director:        permission_records.select { |p| p.name == 'Manage Auth' }.map(&:id),
   team_lead:       permission_records.select { |p| p.name == 'Manage Team' }.map(&:id),
   scrum_master:    permission_records.select { |p| p.name == 'Send Daily Report' }.map(&:id),
-  business_analyst: permission_records.select { |p| ['Generate Team Report', 'Generate Org Report', 'Export Data'].include?(p.name) }.map(&:id)
+  business_analyst: permission_records.select { |p| [ 'Generate Team Report', 'Generate Org Report', 'Export Data' ].include?(p.name) }.map(&:id)
 }
 
 role_map.each do |role_sym, perm_ids|
@@ -177,7 +177,7 @@ team_structure = {
         id:           UUIDTools::UUID.random_create.to_s,
         team_id:      team_uuid,
         user_id:      user_uuid,
-        relation_type:'direct'
+        relation_type: 'direct'
       )
 
       UserRole.create!(user_id: user_uuid, role_id: roles[role_sym])
@@ -224,9 +224,51 @@ test_roles.each do |role_sym|
   )
 end
 
+# ─── Add a daily setup to the first team ───────────────────────────────────────
+first_team = Team.where(organization_id: organization.id).first
+if first_team && !first_team.daily_setup
+  DailySetup.create!(
+    team: first_team,
+    slug: "first-team-daily-setup",
+    name: "The Daily Ritual of Looking Busy",
+    description: "Hey, pretend to be productive and call it a win.",
+    visible_at: "09:30",
+    reminder_at: "08:00",
+    daily_report_time: "10:30",
+    weekly_report_day: "fri",
+    weekly_report_time: "17:00",
+    template: "freeform",
+    allow_comments: true,
+    active: true,
+    settings: {}
+  )
+end
+
+# ─── Add a daily setup to the test team ───────────────────────────────────────
+test_team = Team.find_by(slug: 'test-team')
+if test_team && !test_team.daily_setup
+  DailySetup.create!(
+    team: test_team,
+    slug: "test-team-daily-setup",
+    name: "The Daily Ritual of Looking Busy",
+    description: "Hey, pretend to be productive and call it a win.",
+    visible_at: "09:30",
+    reminder_at: "08:00",
+    daily_report_time: "10:30",
+    weekly_report_day: "fri",
+    weekly_report_time: "17:00",
+    template: "freeform",
+    allow_comments: true,
+    active: true,
+    settings: {}
+  )
+end
+
 # ─── Print passwords for privileged users ──────────────────────────────────────
 puts "\nGenerated passwords for privileged users:"
 generated_passwords.each do |user_key, pw|
   username = user_key.gsub('_user', '')
   puts "  #{username}: #{pw}"
 end
+
+# When seeding, these fields will be nil by default, so no change needed for initial values.
