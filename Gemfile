@@ -22,13 +22,13 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"
-gem "solid_cable"
+gem "solid_cable", "3.0.8"
 
 # Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", require: false
+gem "bootsnap", "1.18.6", require: false
 
 # Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
-gem "kamal", require: false
+gem "kamal", "2.6.1", require: false
 
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
@@ -37,8 +37,18 @@ gem "thruster", require: false
 # gem "image_processing", "~> 1.2"
 
 gem "uuidtools"
-gem 'rufus-scheduler'
-gem 'good_job'
+gem "rufus-scheduler"
+gem "good_job"
+
+gem "drb", "2.2.3"
+gem "loofah", "2.24.1"
+gem "psych", "5.2.6"
+gem "rack", "3.1.15"
+gem "rails-dom-testing", "2.3.0"
+gem "rdoc", "6.14.0"
+gem "solid_cable", "3.0.8"
+gem "zeitwerk", "2.7.3"
+gem "erb", "5.0.1"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
