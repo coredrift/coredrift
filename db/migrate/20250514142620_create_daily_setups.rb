@@ -15,7 +15,12 @@ class CreateDailySetups < ActiveRecord::Migration[7.1]
       t.string  :template, null: false, default: "freeform"
       t.boolean :allow_comments, null: false, default: false
       t.boolean :active, null: false, default: true
-      t.json    :settings, null: false, default: {}
+
+      t.date :last_reminder_enqueued_at
+      t.date :last_report_enqueued_at
+      t.date :last_weekly_report_enqueued_at
+
+      t.json :settings, null: false, default: {}
 
       t.timestamps
     end

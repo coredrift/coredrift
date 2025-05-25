@@ -73,6 +73,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_14_205611) do
 
   add_foreign_key "dailies", "daily_setups"
   add_foreign_key "dailies", "teams"
+  add_foreign_key "dailies", "users"
   add_foreign_key "daily_setups", "teams"
   add_foreign_key "organization_owners", "organizations"
   add_foreign_key "organization_owners", "users"
