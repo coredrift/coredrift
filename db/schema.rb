@@ -10,12 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_14_205611) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_25_204549) do
 # Could not dump table "dailies" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
 
 
 # Could not dump table "daily_setups" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
+
+# Could not dump table "jobs" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
 
 
