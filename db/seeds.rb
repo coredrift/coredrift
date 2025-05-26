@@ -80,6 +80,7 @@ roles.each do |name, id|
     id: id,
     name: name.to_s.capitalize.gsub('_', ' '),
     description: "Role: #{name.to_s.capitalize.gsub('_', ' ')}",
+    contextual: false,
     status: 'enabled',
     created_at: Time.now,
     updated_at: Time.now
@@ -324,6 +325,14 @@ daily_setup2 = DailySetup.find_or_create_by!(team_id: team2.id) do |ds|
   ds.allow_comments = true
   ds.active = true
   ds.settings = {}
+end
+
+# ─── Example: assign a contextual role to a user for a specific team
+team = Team.first
+user = User.first
+role = Role.first
+if team && user && role
+  UserRole.create!(user_id: user.id, role_id: role.id, context_type: "Team", context_id: team.id)
 end
 
 # ─── Print passwords for privileged users ──────────────────────────────────────

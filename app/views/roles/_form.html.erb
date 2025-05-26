@@ -13,6 +13,14 @@
       <textarea class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2" name="role[description]" id="role_description"><%= role.description %></textarea>
     </div>
 
+    <div>
+      <input type="hidden" name="role[contextual]" value="0" />
+      <label class="inline-flex items-center mt-3">
+        <input type="checkbox" name="role[contextual]" id="role_contextual" value="1" <%= role.contextual? ? 'checked' : '' %> class="form-checkbox h-5 w-5 text-blue-600" />
+        <span class="ml-2 text-gray-700">Contextual (team-specific)</span>
+      </label>
+    </div>
+
     <div class="flex justify-end space-x-4">
       <a class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" href="<%= roles_path %>">Cancel</a>
       <input type="submit" name="commit" value="<%= role.persisted? ? 'Update' : 'Create' %>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" data-disable-with="<%= role.persisted? ? 'Update' : 'Create' %>" />

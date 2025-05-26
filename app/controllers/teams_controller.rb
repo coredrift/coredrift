@@ -16,7 +16,7 @@ class TeamsController < ApplicationController
   def create
     @team = Team.new(team_params)
     if @team.save
-      redirect_to team_path(@team), notice: 'Team was successfully created.'
+      redirect_to team_path(@team), notice: "Team was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -58,6 +58,30 @@ class TeamsController < ApplicationController
     else
       redirect_to members_team_path(@team), alert: "User #{user.username} is not a member of the team."
     end
+  end
+
+  def member_roles
+    @team = Team.find(params[:id])
+    @user = User.find(params[:user_id])
+    @user_roles = UserRole.where(user: @user, context_type: "Team", context_id: @team.id).includes(:role)
+    @available_roles = Role.where.not(id: @user_roles.pluck(:role_id))
+  end
+
+  def assign_contextual_role
+    @team = Team.find(params[:id])
+    @user = User.find(params[:user_id])
+    @role = Role.find(params[:role_id])
+    UserRole.create!(user: @user, role: @role, context_type: "Team", context_id: @team.id)
+    redirect_to member_roles_team_path(@team, @user)
+  end
+
+  def remove_contextual_role
+    @team = Team.find(params[:id])
+    @user = User.find(params[:user_id])
+    @role = Role.find(params[:role_id])
+    user_role = UserRole.find_by(user: @user, role: @role, context_type: "Team", context_id: @team.id)
+    user_role&.destroy
+    redirect_to member_roles_team_path(@team, @user)
   end
 
   private
