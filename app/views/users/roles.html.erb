@@ -13,7 +13,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @user.roles.each do |role| %>
+        <% @user.roles.where(contextual: false).each do |role| %>
           <tr>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-white border-b border-gray-200"><%= role.name %></td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-white border-b border-gray-200"><%= role.description %></td>
@@ -35,7 +35,7 @@
         </tr>
       </thead>
       <tbody>
-        <% (Role.all - @user.roles).each do |role| %>
+        <% @available_roles.each do |role| %>
           <tr>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-white border-b border-gray-200"><%= role.name %></td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-white border-b border-gray-200"><%= role.description %></td>

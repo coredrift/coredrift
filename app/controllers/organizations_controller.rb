@@ -1,6 +1,8 @@
 class OrganizationsController < ApplicationController
+  layout "organization"
+
   def index
-    @owners = User.where(username: 'superadmin')
+    @owners = User.where(username: "superadmin")
   end
 
   def show
@@ -19,7 +21,7 @@ class OrganizationsController < ApplicationController
   def update
     @organization = Organization.first
     if @organization.update(organization_params)
-      redirect_to organization_path(@organization), notice: 'Organization updated successfully.'
+      redirect_to organization_path(@organization), notice: "Organization updated successfully."
     else
       render :edit, status: :unprocessable_entity
     end

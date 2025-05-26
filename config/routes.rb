@@ -56,6 +56,9 @@ Rails.application.routes.draw do
       get :members
       delete "members/:user_id", to: "teams#remove_member", as: :remove_member
       post   "members/:user_id", to: "teams#add_member",    as: :add_member
+      get "member_roles/:user_id", to: "teams#member_roles", as: :member_roles
+      post "member_roles/:user_id/assign/:role_id", to: "teams#assign_contextual_role", as: :assign_contextual_role
+      delete "member_roles/:user_id/remove/:role_id", to: "teams#remove_contextual_role", as: :remove_contextual_role
     end
     resources :daily_setups, only: [ :new, :create, :edit, :update ], shallow: true
 

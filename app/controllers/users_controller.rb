@@ -56,7 +56,8 @@ class UsersController < ApplicationController
 
   # GET /users/:id/roles
   def roles
-    @available_roles = Role.all
+    assigned_roles = @user.roles.where(contextual: false)
+    @available_roles = Role.where(contextual: false).where.not(id: assigned_roles.pluck(:id))
   end
 
   # POST /users/:id/assign_role

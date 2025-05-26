@@ -18,6 +18,7 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-white border-b border-gray-200"><%= member.email_address %></td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center space-x-2 flex justify-center bg-white border-b border-gray-200">
             <%= button_to 'Remove', remove_member_team_path(@team, member), method: :delete, class: 'bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' %>
+            <%= link_to 'Roles', member_roles_team_path(@team, member), class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
           </td>
         </tr>
       <% end %>
