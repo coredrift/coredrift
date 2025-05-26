@@ -4,6 +4,7 @@ class CreateRoles < ActiveRecord::Migration[8.0]
       t.string :slug
       t.string :name
       t.text :description
+      t.boolean :contextual, default: false, null: false
       t.string :status
       t.string :created_by
       t.string :updated_by

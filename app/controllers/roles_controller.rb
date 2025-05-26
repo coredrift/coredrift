@@ -1,6 +1,6 @@
 class RolesController < ApplicationController
   layout "auth"
-  before_action :set_role, only: [:show, :edit, :update, :destroy]
+  before_action :set_role, only: [ :show, :edit, :update, :destroy ]
 
   # GET /roles
   def index
@@ -19,9 +19,12 @@ class RolesController < ApplicationController
   # POST /roles
   def create
     @role = Role.new(role_params)
+    Rails.logger.info("[Role CREATE] Params: \\#{role_params.inspect}")
     if @role.save
-      redirect_to roles_path, notice: 'Role was successfully created.'
+      Rails.logger.info("[Role CREATE] Saved: \\#{@role.inspect}")
+      redirect_to roles_path, notice: "Role was successfully created."
     else
+      Rails.logger.warn("[Role CREATE] Failed: \\#{@role.errors.full_messages}")
       render :new, status: :unprocessable_entity
     end
   end
@@ -33,9 +36,12 @@ class RolesController < ApplicationController
   # PATCH/PUT /roles/:id
   def update
     @role = Role.find(params[:id])
+    Rails.logger.info("[Role UPDATE] Params: \\#{role_params.inspect}")
     if @role.update(role_params)
-      redirect_to roles_path, notice: 'Role was successfully updated.'
+      Rails.logger.info("[Role UPDATE] Updated: \\#{@role.inspect}")
+      redirect_to roles_path, notice: "Role was successfully updated."
     else
+      Rails.logger.warn("[Role UPDATE] Failed: \\#{@role.errors.full_messages}")
       render :edit, status: :unprocessable_entity
     end
   end
@@ -43,7 +49,7 @@ class RolesController < ApplicationController
   # DELETE /roles/:id
   def destroy
     @role.destroy
-    redirect_to roles_path, notice: 'Role was successfully deleted.'
+    redirect_to roles_path, notice: "Role was successfully deleted."
   end
 
   # GET /roles/:id/permissions
@@ -58,7 +64,7 @@ class RolesController < ApplicationController
     unless @role.permissions.exists?(id: permission.id)
       @role.role_permissions.create(permission: permission)
     end
-    redirect_to permissions_role_path(@role), notice: 'Permission assigned.'
+    redirect_to permissions_role_path(@role), notice: "Permission assigned."
   end
 
   def revoke_permission
@@ -66,7 +72,7 @@ class RolesController < ApplicationController
     permission = Permission.find(params[:permission_id])
     role_permission = @role.role_permissions.find_by(permission: permission)
     role_permission&.destroy
-    redirect_to permissions_role_path(@role), notice: 'Permission revoked.'
+    redirect_to permissions_role_path(@role), notice: "Permission revoked."
   end
 
   private
@@ -76,6 +82,6 @@ class RolesController < ApplicationController
   end
 
   def role_params
-    params.require(:role).permit(:slug, :name, :description, :status, :created_by, :updated_by)
+    params.require(:role).permit(:slug, :name, :description, :status, :created_by, :updated_by, :contextual)
   end
 end
