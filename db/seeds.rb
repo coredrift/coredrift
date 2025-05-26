@@ -264,11 +264,76 @@ if test_team && !test_team.daily_setup
   )
 end
 
-# ─── Print passwords for privileged users ──────────────────────────────────────
-puts "\nGenerated passwords for privileged users:"
-generated_passwords.each do |user_key, pw|
-  username = user_key.gsub('_user', '')
-  puts "  #{username}: #{pw}"
+# ─── Team Lead A in Two Teams ────────────────────────────────────────────────
+team_lead_a = User.find_or_create_by!(email_address: 'test-team-lead@example.com') do |u|
+  u.name = 'Test Team Lead'
+  u.username = 'test-team-lead'
+  u.password_digest = password_digest('test-team-lead')
+  u.role = 'team_lead'
 end
 
-# When seeding, these fields will be nil by default, so no change needed for initial values.
+# Create two teams
+team1 = Team.find_or_create_by!(slug: 'team-lead-a-1') do |t|
+  t.organization_id = organization.id
+  t.name = 'Team Lead A Team 1'
+  t.description = 'First team for Team Lead A'
+end
+team2 = Team.find_or_create_by!(slug: 'team-lead-a-2') do |t|
+  t.organization_id = organization.id
+  t.name = 'Team Lead A Team 2'
+  t.description = 'Second team for Team Lead A'
+end
+
+# Add team lead as team_lead in team1
+TeamMembership.find_or_create_by!(team_id: team1.id, user_id: team_lead_a.id) do |tm|
+  tm.relation_type = 'direct'
+end
+UserRole.find_or_create_by!(user_id: team_lead_a.id, role_id: roles[:team_lead])
+
+# Add team lead as member in team2
+TeamMembership.find_or_create_by!(team_id: team2.id, user_id: team_lead_a.id) do |tm|
+  tm.relation_type = 'direct'
+end
+UserRole.find_or_create_by!(user_id: team_lead_a.id, role_id: roles[:team_lead])
+
+# Daily setups for both teams
+daily_setup1 = DailySetup.find_or_create_by!(team_id: team1.id) do |ds|
+  ds.slug = 'team-lead-a-1-daily-setup'
+  ds.name = 'Daily for Team Lead A Team 1'
+  ds.description = 'Daily setup for Team Lead A in Team 1.'
+  ds.visible_at = '09:30'
+  ds.reminder_at = '08:00'
+  ds.daily_report_time = '10:30'
+  ds.weekly_report_day = 'fri'
+  ds.weekly_report_time = '17:00'
+  ds.template = 'yesterday_today_blockers'
+  ds.allow_comments = true
+  ds.active = true
+  ds.settings = {}
+end
+daily_setup2 = DailySetup.find_or_create_by!(team_id: team2.id) do |ds|
+  ds.slug = 'team-lead-a-2-daily-setup'
+  ds.name = 'Daily for Team Lead A Team 2'
+  ds.description = 'Daily setup for Team Lead A in Team 2.'
+  ds.visible_at = '09:30'
+  ds.reminder_at = '08:00'
+  ds.daily_report_time = '10:30'
+  ds.weekly_report_day = 'fri'
+  ds.weekly_report_time = '17:00'
+  ds.template = 'yesterday_today_blockers'
+  ds.allow_comments = true
+  ds.active = true
+  ds.settings = {}
+end
+
+# ─── Print passwords for privileged users ──────────────────────────────────────
+puts "\nGenerated passwords for privileged users:"
+File.open("password.txt", "w") do |f|
+  f.puts "Generated passwords for privileged users:"
+  generated_passwords.each do |user_key, pw|
+    username = user_key.gsub('_user', '')
+    line = "  #{username}: #{pw}"
+    puts line
+    f.puts line
+  end
+end

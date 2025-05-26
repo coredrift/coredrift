@@ -1,4 +1,13 @@
 Rails.application.routes.draw do
+  get "dailies/new"
+  get "dailies/create"
+  get "dailies/showbin/rails"
+  get "dailies/generate"
+  get "dailies/controller"
+  get "dailies/Dailies"
+  get "dailies/new"
+  get "dailies/create"
+  get "dailies/show"
   resource :session, only: [ :new, :create, :destroy ]
   delete "session", to: "sessions#destroy", as: :logout
   get    "session", to: "sessions#show"
@@ -15,8 +24,8 @@ Rails.application.routes.draw do
       delete "permissions/:permission_id",
              action: :revoke_permission, as: :revoke_permission
     end
-    resources :roles,       only: [:index, :update]
-    resources :permissions, only: [:index, :update]
+    resources :roles,       only: [ :index, :update ]
+    resources :permissions, only: [ :index, :update ]
   end
 
   get "users/new"
@@ -42,20 +51,21 @@ Rails.application.routes.draw do
   end
 
   resources :organizations, only: [ :show, :edit, :update ]
-  resources :teams, only: [:index, :show, :new, :edit, :update] do
+  resources :teams, only: [ :index, :show, :new, :edit, :update ] do
     member do
       get :members
-      delete 'members/:user_id', to: 'teams#remove_member', as: :remove_member
-      post   'members/:user_id', to: 'teams#add_member',    as: :add_member
+      delete "members/:user_id", to: "teams#remove_member", as: :remove_member
+      post   "members/:user_id", to: "teams#add_member",    as: :add_member
     end
-    resources :daily_setups, only: [:new, :create, :edit, :update], shallow: true
+    resources :daily_setups, only: [ :new, :create, :edit, :update ], shallow: true
 
     # Dailies nested under teams for index/new/create, shallow routes
-    resources :dailies, only: [:index, :new, :create], shallow: true
+    resources :dailies, only: [ :index, :new, :create ], shallow: true
   end
 
   # Shallow routes for Dailies show/edit/update/destroy
-  resources :dailies, only: [:show, :edit, :update, :destroy]
+  resources :dailies, only: [ :show, :edit, :update, :destroy ]
+  resources :dailies, only: [ :new, :create, :show ]
 
   get "todo", to: "todo#index", as: :todo_index
 
@@ -75,7 +85,7 @@ Rails.application.routes.draw do
   root "home#index"
   # root "posts#index"
 
-  get '/dash',               to: 'dash#dash'
-  get '/dash/add_member',    to: 'dash#add_member',    as: 'add_member_dash'
-  get '/dash/remove_member', to: 'dash#remove_member', as: 'remove_member_dash'
+  get "/dash",               to: "dash#dash"
+  get "/dash/add_member",    to: "dash#add_member",    as: "add_member_dash"
+  get "/dash/remove_member", to: "dash#remove_member", as: "remove_member_dash"
 end

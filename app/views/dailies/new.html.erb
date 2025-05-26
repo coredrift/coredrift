@@ -1,0 +1,30 @@
+<div class="max-w-3xl mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+  <h1 class="text-2xl font-bold mb-2 text-center"><%= @daily_setup.name %></h1>
+  <p class="mb-6 text-center text-gray-600"><%= @daily_setup.description %></p>
+
+  <%= form_with(model: @daily, url: @daily.new_record? ? dailies_path(daily_setup_id: @daily_setup.id) : daily_path(@daily), method: @daily.new_record? ? :post : :patch) do |f| %>
+    <% if @daily_setup.template == "freeform" %>
+      <div class="mb-4">
+        <%= f.label :freeform, 'Freeform notes', class: 'block text-gray-700 font-bold mb-2' %>
+        <%= f.text_area :freeform, class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' %>
+      </div>
+    <% elsif @daily_setup.template == "yesterday_today_blockers" %>
+      <div class="mb-4">
+        <%= f.label :yesterday, 'Yesterday', class: 'block text-gray-700 font-bold mb-2' %>
+        <%= f.text_area :yesterday, class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' %>
+      </div>
+      <div class="mb-4">
+        <%= f.label :today, 'Today', class: 'block text-gray-700 font-bold mb-2' %>
+        <%= f.text_area :today, class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' %>
+      </div>
+      <div class="mb-4">
+        <%= f.label :blockers, 'Blockers', class: 'block text-gray-700 font-bold mb-2' %>
+        <%= f.text_area :blockers, class: 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' %>
+      </div>
+    <% end %>
+    <div class="flex justify-end gap-4">
+      <%= link_to 'Cancel', dash_path, class: 'bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded' %>
+      <%= f.submit(@daily.new_record? ? 'Send' : 'Update', class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded') %>
+    </div>
+  <% end %>
+</div>
