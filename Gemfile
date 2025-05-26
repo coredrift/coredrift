@@ -46,7 +46,6 @@ gem "psych", "5.2.6"
 gem "rack", "3.1.15"
 gem "rails-dom-testing", "2.3.0"
 gem "rdoc", "6.14.0"
-gem "solid_cable", "3.0.8"
 gem "zeitwerk", "2.7.3"
 gem "erb", "5.0.1"
 
@@ -64,6 +63,9 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Preview mail in the browser instead of sending it [https://github.com/ryanb/letter_opener]
+  gem "letter_opener"
 end
 
 group :test do
