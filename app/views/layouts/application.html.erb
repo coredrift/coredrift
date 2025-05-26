@@ -62,8 +62,8 @@
       <% end %>
 
       <% if flash[:notice] %>
-        <div id="flash-notice" class="flash-message notice">
-          <span><%= flash[:notice] %></span>
+        <div id="flash-notice" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative flash-message" role="alert">
+          <span class="block sm:inline"><%= flash[:notice] %></span>
           <button class="close" onclick="this.parentElement.style.display='none';">✖</button>
         </div>
       <% end %>

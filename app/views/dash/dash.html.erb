@@ -2,17 +2,33 @@
   <% if current_user.role == 'team_lead' %>
     <div class="bg-white shadow-md rounded p-4">
       <h2 class="text-lg font-bold mb-2">Team Lead</h2>
-      <div class="team-widget">
+      <div class="team-widget space-y-4">
         <% @teams.each do |team| %>
-          <div class="team-block">
-            <% if team.daily_setup.present? %>
-              <div class="mb-2"><%= team.daily_setup.details %></div>
-              <%= link_to 'Edit', edit_daily_setup_path(team.daily_setup), class: 'bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded float-right' %>
-            <% else %>
-              <p>Hey! Let’s set up your daily standup, just once and done.</p>
-              <%= link_to 'New', new_team_daily_setup_path(team), class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right' %>
-            <% end %>
-          </div>
+          <% if team.daily_setup.present? %>
+            <div class="border rounded p-4 bg-gray-50 flex flex-col justify-between min-h-[180px]">
+              <div>
+                <div class="mb-2">
+                  <span class="font-bold text-blue-700"><%= team.name %></span>
+                  <span class="text-gray-500 ml-2">(<%= team.daily_setup.name %>)</span>
+                </div>
+                <div class="text-gray-700">
+                  <%= team.daily_setup.details %>
+                </div>
+              </div>
+              <div class="mt-4 text-right">
+                <%= link_to 'Edit', edit_daily_setup_path(team.daily_setup), class: 'bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded' %>
+              </div>
+            </div>
+          <% else %>
+            <div class="border rounded p-4 bg-gray-50 flex flex-col justify-between min-h-[180px]">
+              <div>
+                <p>Hey! Let’s set up your daily standup, just once and done.</p>
+              </div>
+              <div class="mt-4 text-right">
+                <%= link_to 'New', new_team_daily_setup_path(team), class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
+              </div>
+            </div>
+          <% end %>
         <% end %>
       </div>
     </div>
@@ -21,7 +37,41 @@
   <% if ['team_lead', 'software_engineer', 'designer', 'product_owner', 'qa_engineer', 'devops_engineer', 'scrum_master', 'business_analyst'].include?(current_user.role) %>
     <div class="bg-white shadow-md rounded p-4">
       <h2 class="text-lg font-bold mb-2">Team Member</h2>
-      <p>Content for the Team Member block goes here.</p>
+      <div class="space-y-4">
+        <% @teams.each do |team| %>
+          <% daily_setup = team.daily_setup %>
+          <% next unless daily_setup %>
+          <% daily = Daily.find_by(user_id: current_user.id, team_id: team.id, date: Date.current) %>
+          <div class="border rounded p-4 bg-gray-50 flex flex-col justify-between min-h-[180px]">
+            <div>
+              <div class="mb-2">
+                <span class="font-bold text-blue-700"><%= team.name %></span>
+                <span class="text-gray-500 ml-2">(<%= daily_setup.name %>)</span>
+              </div>
+              <% if daily %>
+                <div class="text-gray-700">
+                  <% if daily.freeform.present? %>
+                    <div><strong>Notes:</strong> <%= truncate(daily.freeform, length: 120) %></div>
+                  <% else %>
+                    <div><strong>Yesterday:</strong> <%= truncate(daily.yesterday, length: 60) %></div>
+                    <div><strong>Today:</strong> <%= truncate(daily.today, length: 60) %></div>
+                    <div><strong>Blockers:</strong> <%= truncate(daily.blockers, length: 60) %></div>
+                  <% end %>
+                </div>
+              <% else %>
+                <div class="text-gray-500 italic">No daily submitted yet for today.</div>
+              <% end %>
+            </div>
+            <div class="mt-4 text-right">
+              <% if daily %>
+                <%= link_to 'Edit', edit_daily_path(daily), class: 'bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded' %>
+              <% else %>
+                <%= link_to 'Create Daily', new_daily_path(daily_setup_id: daily_setup.id), class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
     </div>
 
     <div class="bg-white shadow-md rounded p-4">
