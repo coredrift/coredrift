@@ -37,7 +37,7 @@ org = Organization.find_or_create_by!(slug: 'default') do |o|
   o.id = organization_id
   o.name = 'Default Organization'
   o.short_description = 'Default single-instance organization'
-  o.description = 'Seeded default organization for initial setup.'
+  o.description = 'Default organization for initial setup.'
   o.owner_id = superadmin.id
 end
 
@@ -49,24 +49,13 @@ contextual_roles = %w[team_lead software_engineer designer product_owner qa_engi
 
 roles = {}
 
-global_roles.each do |name|
+(global_roles + contextual_roles).each do |name|
   id = UUIDTools::UUID.random_create.to_s
   roles[name.to_sym] = id
   Role.find_or_create_by!(name: name) do |r|
     r.id = id
-    r.description = "Global role: #{name}"
-    r.contextual = false
-    r.status = 'enabled'
-  end
-end
-
-contextual_roles.each do |name|
-  id = UUIDTools::UUID.random_create.to_s
-  roles[name.to_sym] = id
-  Role.find_or_create_by!(name: name) do |r|
-    r.id = id
-    r.description = "Contextual role: #{name}"
-    r.contextual = true
+    r.description = name.split('_').map(&:capitalize).join(' ')
+    r.contextual = contextual_roles.include?(name)
     r.status = 'enabled'
   end
 end
@@ -125,7 +114,7 @@ num_teams.times do |i|
     t.id = team_id
     t.organization_id = org.id
     t.name = "Test Team #{team_n}"
-    t.description = "Seeded test team ##{team_n}"
+    t.description = "Test team"
   end
 
   # Archetypical users (one per role)
@@ -175,7 +164,7 @@ num_teams.times do |i|
   DailySetup.find_or_create_by!(team_id: team.id) do |ds|
     ds.slug = "#{team_slug}-daily-setup"
     ds.name = "Daily Ritual for #{team.name}"
-    ds.description = "Seeded daily setup for team #{team_n}"
+    ds.description = "Daily setup for team #{team_n}"
     ds.visible_at = '09:30'
     ds.reminder_at = '08:00'
     ds.daily_report_time = '10:30'
