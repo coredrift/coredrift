@@ -12,6 +12,15 @@ class CreateDailySetups < ActiveRecord::Migration[7.1]
       t.string  :daily_report_time, null: false, default: "10:00"
       t.string  :weekly_report_day, null: false, default: "fri"
       t.string  :weekly_report_time, null: false, default: "17:00"
+
+      t.boolean :sunday,    null: false, default: false
+      t.boolean :monday,    null: false, default: true
+      t.boolean :tuesday,   null: false, default: true
+      t.boolean :wednesday, null: false, default: true
+      t.boolean :thursday,  null: false, default: true
+      t.boolean :friday,    null: false, default: true
+      t.boolean :saturday,  null: false, default: false
+
       t.string  :template, null: false, default: "freeform"
       t.boolean :allow_comments, null: false, default: false
       t.boolean :active, null: false, default: true
