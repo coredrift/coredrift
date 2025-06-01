@@ -1,9 +1,15 @@
 <% password_digest = BCrypt::Password.create("password") %>
 
 one:
+  id: 00000000-0000-0000-0000-000000000001
   email_address: one@localhost
-  password_digest: <%= password_digest %>
+  password_digest: <%= BCrypt::Password.create('password') %>
+  is_active: true
+  role: member
 
 two:
+  id: 00000000-0000-0000-0000-000000000002
   email_address: two@localhost
-  password_digest: <%= password_digest %>
+  password_digest: <%= BCrypt::Password.create('password') %>
+  is_active: true
+  role: member

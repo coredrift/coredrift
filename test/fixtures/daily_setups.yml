@@ -1,0 +1,22 @@
+daily_setup_one:
+  id: 00000000-0000-0000-0000-000000000030
+  team_id: 00000000-0000-0000-0000-000000000020
+  slug: daily-setup-one
+  name: Daily Setup One
+  description: Test daily setup
+  visible_at: '09:30'
+  reminder_at: '09:00'
+  daily_report_time: '10:00'
+  weekly_report_day: fri
+  weekly_report_time: '17:00'
+  sunday: false
+  monday: true
+  tuesday: true
+  wednesday: true
+  thursday: true
+  friday: true
+  saturday: false
+  template: freeform
+  allow_comments: false
+  active: true
+  settings: '{}'

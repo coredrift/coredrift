@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  resource: one
-  permission: one
+  resource_id: 00000000-0000-0000-0000-0000000000a0
+  permission_id: 00000000-0000-0000-0000-000000000090
   created_by: MyString
 
 two:
-  resource: two
-  permission: two
+  resource_id: 00000000-0000-0000-0000-0000000000a1
+  permission_id: 00000000-0000-0000-0000-000000000091
   created_by: MyString

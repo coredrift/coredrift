@@ -1,21 +1,33 @@
 class DailyReportJob < ApplicationJob
   queue_as :default
 
-  def perform(daily_setup_id)
-    daily_setup = DailySetup.find_by(id: daily_setup_id) # Changed from find to find_by
+  def perform(job_id)
+    job = Job.find_by(id: job_id)
+    return unless job
 
-    unless daily_setup # Added check for nil
-      Rails.logger.warn "[DailyReportJob] DailySetup with ID ##{daily_setup_id} not found. Skipping job."
-      return
+    begin
+      job.update!(state: "processing")
+      daily_setup = DailySetup.find_by(id: job.target_id)
+
+      unless daily_setup
+        Rails.logger.warn "[DailyReportJob] DailySetup with ID ##{job.target_id} not found. Skipping job."
+        job.update!(state: "completed", executed_at: Time.current)
+        return
+      end
+
+      current_day_method_name = Time.current.strftime("%A").downcase.to_sym
+
+      unless daily_setup.send(current_day_method_name)
+        Rails.logger.info "[DailyReportJob] Skipped for DailySetup ##{daily_setup.id}. Day '#{current_day_method_name}' is not active."
+        job.update!(state: "completed", executed_at: Time.current)
+        return
+      end
+
+      Rails.logger.info "[DailyReportJob] Would publish daily report for DailySetup ##{daily_setup.id}"
+      job.update!(state: "completed", executed_at: Time.current)
+    rescue => e
+      job.update!(state: "failed", error_message: e.message)
+      raise
     end
-
-    current_day_method_name = Time.current.strftime("%A").downcase.to_sym # :monday, :tuesday, etc.
-
-    unless daily_setup.send(current_day_method_name)
-      Rails.logger.info "[DailyReportJob] Skipped for DailySetup ##{daily_setup.id}. Day '#{current_day_method_name}' is not active."
-      return
-    end
-
-    Rails.logger.info "[DailyReportJob] Would publish daily report for DailySetup ##{daily_setup_id} (placeholder)"
   end
 end

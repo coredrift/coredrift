@@ -8,8 +8,6 @@ gem "propshaft"
 gem "sqlite3", ">= 2.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
-# Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
-gem "tailwindcss-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
@@ -61,6 +59,9 @@ group :development, :test do
 end
 
 group :development do
+  # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
+  gem "tailwindcss-rails"
+  gem "jsbundling-rails", "~> 1.3"
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 
@@ -74,6 +75,3 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
-
-
-gem "jsbundling-rails", "~> 1.3"

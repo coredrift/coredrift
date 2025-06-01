@@ -1,0 +1,6 @@
+daily_report_job_one:
+  id: 00000000-0000-0000-0000-000000000050
+  job_type: report
+  target_id: 00000000-0000-0000-0000-000000000030
+  scheduled_for: <%= Time.current %>
+  state: pending

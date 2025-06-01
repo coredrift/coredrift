@@ -11,5 +11,16 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+
+    # Automatic authentication for IntegrationTest
+    def sign_in_as(user, password: 'password')
+      if defined?(post) && respond_to?(:post)
+        post login_url, params: { email: user.email_address, password: password }
+      elsif defined?(open_session)
+        open_session do |sess|
+          sess.post login_url, params: { email: user.email_address, password: password }
+        end
+      end
+    end
   end
 end

@@ -50,4 +50,8 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Disable asset and tailwindcss compilation in test
+  config.assets.compile = false if config.respond_to?(:assets)
+  config.x.tailwindcss.compile = false if config.x.respond_to?(:tailwindcss)
 end

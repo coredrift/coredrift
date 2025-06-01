@@ -42,3 +42,8 @@
 
 # Ignore seed output files
 seed.out
+
+# Node.js
+node_modules/
+package-lock.json
+yarn.lock

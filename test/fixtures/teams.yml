@@ -1,0 +1,6 @@
+team_one:
+  id: 00000000-0000-0000-0000-000000000020
+  organization_id: 00000000-0000-0000-0000-000000000010
+  slug: team-one
+  name: Team One
+  description: Test team

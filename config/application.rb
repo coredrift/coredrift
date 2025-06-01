@@ -22,6 +22,8 @@ module CoreDrift
             g.orm :active_record, primary_key_type: :uuid
         end
 
+        config.active_record.schema_format = :sql
+
         config.logger = ActiveSupport::Logger.new(STDOUT)
         config.logger.formatter = proc do |severity, datetime, progname, msg|
             level = {

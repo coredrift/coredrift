@@ -1,5 +1,21 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+perm_one:
+  id: 00000000-0000-0000-0000-000000000090
+  slug: perm-one
+  name: Permission One
+  description: Test permission
+  created_by: one
+  updated_by: one
+
+perm_two:
+  id: 00000000-0000-0000-0000-000000000091
+  slug: perm-two
+  name: Permission Two
+  description: Test permission two
+  created_by: two
+  updated_by: two
+
 one:
   slug: MyString
   name: MyString

@@ -1,9 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  role: one
-  permission: one
+  role_id: 00000000-0000-0000-0000-000000000080
+  permission_id: 00000000-0000-0000-0000-000000000090
 
 two:
-  role: two
-  permission: two
+  role_id: 00000000-0000-0000-0000-000000000081
+  permission_id: 00000000-0000-0000-0000-000000000091
