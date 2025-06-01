@@ -33,6 +33,13 @@ class DailySetupsController < ApplicationController
   private
 
   def daily_setup_params
-    params.require(:daily_setup).permit(:team_id, :slug, :name, :description, :visible_at, :reminder_at, :daily_report_time, :weekly_report_day, :weekly_report_time, :template, :allow_comments, :active, :settings)
+    params.require(:daily_setup).permit(
+      :slug, :name, :description,
+      :visible_at, :reminder_at, :daily_report_time,
+      :weekly_report_day, :weekly_report_time,
+      :template, :allow_comments, :active,
+      :settings,
+      :sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday
+    )
   end
 end

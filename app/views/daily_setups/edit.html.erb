@@ -53,6 +53,19 @@
       </div>
     </div>
 
+    <!-- Weekday selectors -->
+    <div class="mb-6">
+      <label class="block text-gray-700 font-bold mb-2">Days Active</label>
+      <div class="flex space-x-4">
+        <% [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each do |day| %>
+          <label class="inline-flex items-center">
+            <%= form.check_box day, { class: 'mr-1 leading-tight' }, '1', '0' %>
+            <span class="text-gray-700 uppercase"><%= day.to_s.first %></span>
+          </label>
+        <% end %>
+      </div>
+    </div>
+
     <div class="grid grid-cols-2 gap-4">
       <div class="mb-4 col-span-2 text-right">
         <%= form.label :allow_comments, "Allow Comments", class: "block text-gray-700 font-bold mb-2" %>
