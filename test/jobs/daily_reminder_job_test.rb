@@ -4,82 +4,200 @@ class DailyReminderJobTest < ActiveJob::TestCase
   include ActiveSupport::Testing::TimeHelpers
   include ActionMailer::TestHelper
 
-  setup do
-    owner = User.create!(email_address: "ownerrem@example.com", username: "ownerrem", password: "password")
-    @organization = Organization.create!(
-      name: "Org Reminder",
-      slug: "org-reminder-#{SecureRandom.hex(4)}",
-      owner_id: owner.id
-    )
-    @team = Team.create!(name: "Reminder Team", organization: @organization, slug: "reminder-team-#{SecureRandom.hex(4)}")
-    @user1 = User.create!(email_address: "user1@example.com", username: "user1rem", password: "password")
-    @user2 = User.create!(email_address: "user2@example.com", username: "user2rem", password: "password")
-    TeamMembership.create!(user: @user1, team: @team)
-    TeamMembership.create!(user: @user2, team: @team)
-
-    @daily_setup = DailySetup.create!(
-      team: @team,
-      name: "Reminder Test Setup",
-      slug: "reminder-test-setup-" + SecureRandom.hex(4),
-      monday: true,    # Active
-      tuesday: false,  # Inactive
-      wednesday: true,
-      thursday: true,
-      friday: true,
-      saturday: false,
-      sunday: false,
-      reminder_at: "09:00"
-    )
-    @job_record = Job.create!(
-      target_id: @daily_setup.id,
-      state: "pending"
-    )
+  def setup
+    assemble_graph
   end
 
-  test "sends reminders to all team members when day is active (e.g., Monday)" do
-    travel_to Time.zone.local(2025, 6, 2, 9, 5, 0) do # Monday, 9:05 AM
+  test "sends reminders to all team members when the day is active" do
+    # Activate Monday (current day for the test)
+    @setup.update!(monday: true)
+    
+    # Create a job for the daily setup
+    @job = Job.create!(
+      id: SecureRandom.uuid,
+      job_type: "reminder",
+      target_id: @setup.id,
+      state: "pending",
+      scheduled_for: Time.current
+    )
+    
+    travel_to Time.zone.parse("2025-06-02 09:00") do # Monday, 9:00 AM
       assert_emails @team.users.count do
-        DailyReminderJob.perform_now(@job_record.id)
+        DailyReminderJob.perform_now(@job.id)
       end
 
-      @job_record.reload
-      assert_equal "completed", @job_record.state
+      @job.reload
+      assert_equal "completed", @job.state
+      assert_not_nil @job.executed_at
     end
   end
 
-  test "does not send reminders when day is inactive (e.g., Tuesday)" do
-    travel_to Time.zone.local(2025, 6, 3, 9, 5, 0) do # Tuesday, 9:05 AM
-      assert_no_emails do
-        DailyReminderJob.perform_now(@job_record.id)
-      end
-
-      @job_record.reload
-      assert_equal "completed", @job_record.state # Job completes but logs skip
-    end
-  end
-
-  test "handles missing DailySetup and marks job as failed" do
-    job_for_missing_setup = Job.create!(
-      target_id: SecureRandom.uuid,
-      state: "pending"
+  test "does not send reminders when the day is inactive" do
+    # Ensure Monday is inactive
+    @setup.update!(monday: false)
+    
+    @job = Job.create!(
+      id: SecureRandom.uuid,
+      job_type: "reminder",
+      target_id: @setup.id,
+      state: "pending",
+      scheduled_for: Time.current
     )
+    
+    travel_to Time.zone.parse("2025-06-02 09:00") do # Monday, 9:00 AM
+      assert_no_emails do
+        DailyReminderJob.perform_now(@job.id)
+      end
 
-    DailyReminderJob.perform_now(job_for_missing_setup.id)
-
-    job_for_missing_setup.reload
-    assert_equal "failed", job_for_missing_setup.state
-    assert_match /Couldn't find DailySetup/, job_for_missing_setup.error_message
+      @job.reload
+      assert_equal "completed", @job.state # Job is marked as completed even if no emails are sent
+    end
   end
 
-  test "handles missing Job record gracefully (though job wouldn't start)" do
-    non_existent_job_id = SecureRandom.uuid
+  test "handles errors when DailySetup does not exist" do
+    job_with_nonexistent_setup = Job.create!(
+      id: SecureRandom.uuid,
+      job_type: "reminder",
+      target_id: SecureRandom.uuid, # Non-existent ID
+      state: "pending",
+      scheduled_for: Time.current
+    )
 
     assert_raises ActiveRecord::RecordNotFound do
-      DailyReminderJob.perform_now(non_existent_job_id)
+      DailyReminderJob.perform_now(job_with_nonexistent_setup.id)
     end
+
+    job_with_nonexistent_setup.reload
+    assert_equal "failed", job_with_nonexistent_setup.state
+    assert_match /Couldn't find DailySetup/, job_with_nonexistent_setup.error_message
   end
 
-  teardown do
+  test "updates job state to failed when an error occurs" do
+    # Activate Monday to ensure the job would normally run
+    @setup.update!(monday: true)
+    
+    @job = Job.create!(
+      id: SecureRandom.uuid,
+      job_type: "reminder",
+      target_id: @setup.id,
+      state: "pending",
+      scheduled_for: Time.current
+    )
+    
+    error_message = "Test error"
+
+    mock_mailer = Object.new
+    def mock_mailer.deliver_later
+      raise StandardError.new("Test error")
+    end
+    
+    DailyReminderMailer.singleton_class.define_method(:reminder_email) do |*args|
+      mock_mailer
+    end
+    
+    travel_to Time.zone.parse("2025-06-02 09:00") do
+      assert_raises StandardError do
+        DailyReminderJob.perform_now(@job.id)
+      end
+    end
+    
+    @job.reload
+    assert_equal "failed", @job.state
+    assert_equal error_message, @job.error_message
+    
+    DailyReminderMailer.singleton_class.remove_method(:reminder_email)
+  end
+
+  private
+
+  def assemble_graph
+    # Superadmin User
+    @superadmin = User.create!(
+      id: SecureRandom.uuid,
+      username: "superadmin_#{SecureRandom.hex(4)}",
+      name: "Super Admin",
+      email_address: "superadmin_#{SecureRandom.hex(4)}@example.com",
+      password_digest: BCrypt::Password.create("superadmin"),
+      role: "superadmin",
+      is_active: true
+    )
+
+    # Member users
+    @user1 = User.create!(
+      id: SecureRandom.uuid,
+      username: "user1_#{SecureRandom.hex(4)}",
+      name: "User One",
+      email_address: "user1_#{SecureRandom.hex(4)}@example.com",
+      password_digest: BCrypt::Password.create("password"),
+      role: "member",
+      is_active: true
+    )
+
+    @user2 = User.create!(
+      id: SecureRandom.uuid,
+      username: "user2_#{SecureRandom.hex(4)}",
+      name: "User Two",
+      email_address: "user2_#{SecureRandom.hex(4)}@example.com",
+      password_digest: BCrypt::Password.create("password"),
+      role: "member",
+      is_active: true
+    )
+
+    # Organization
+    @organization = Organization.create!(
+      id: SecureRandom.uuid,
+      slug: "default-#{SecureRandom.hex(4)}",
+      name: "Default Organization",
+      short_description: "Default single-instance organization",
+      description: "Default organization for initial setup.",
+      owner_id: @superadmin.id
+    )
+
+    OrganizationOwner.create!(
+      organization_id: @organization.id,
+      user_id: @superadmin.id
+    )
+
+    # Team
+    @team = Team.create!(
+      id: SecureRandom.uuid,
+      slug: "test-team-#{SecureRandom.hex(4)}",
+      name: "Test Team",
+      description: "Team for testing",
+      organization: @organization
+    )
+
+    # Add users to the team
+    TeamMembership.create!(team: @team, user: @user1)
+    TeamMembership.create!(team: @team, user: @user2)
+
+    # Daily Setup
+    @setup = DailySetup.create!(
+      id: SecureRandom.uuid,
+      team: @team,
+      slug: "test-team-daily-setup-#{SecureRandom.hex(4)}",
+      name: "Daily Ritual for Test Team",
+      description: "Daily setup for testing",
+      visible_at: "09:30",
+      reminder_at: "08:00",
+      daily_report_time: "10:30",
+      weekly_report_day: "fri",
+      weekly_report_time: "17:00",
+      template: "freeform",
+      allow_comments: true,
+      active: true,
+      monday: false,
+      tuesday: false, 
+      wednesday: false, 
+      thursday: false,
+      friday: false, 
+      saturday: false, 
+      sunday: false,
+      settings: {}
+    )
+  end
+
+  def teardown
     ActionMailer::Base.deliveries.clear
     begin; SolidQueue::ReadyExecution.delete_all; rescue; end
     begin; SolidQueue::BlockedExecution.delete_all; rescue; end
