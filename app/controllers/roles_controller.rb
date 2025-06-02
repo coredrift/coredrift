@@ -19,12 +19,9 @@ class RolesController < ApplicationController
   # POST /roles
   def create
     @role = Role.new(role_params)
-    Rails.logger.info("[Role CREATE] Params: \\#{role_params.inspect}")
     if @role.save
-      Rails.logger.info("[Role CREATE] Saved: \\#{@role.inspect}")
       redirect_to roles_path, notice: "Role was successfully created."
     else
-      Rails.logger.warn("[Role CREATE] Failed: \\#{@role.errors.full_messages}")
       render :new, status: :unprocessable_entity
     end
   end
@@ -36,12 +33,9 @@ class RolesController < ApplicationController
   # PATCH/PUT /roles/:id
   def update
     @role = Role.find(params[:id])
-    Rails.logger.info("[Role UPDATE] Params: \\#{role_params.inspect}")
     if @role.update(role_params)
-      Rails.logger.info("[Role UPDATE] Updated: \\#{@role.inspect}")
       redirect_to roles_path, notice: "Role was successfully updated."
     else
-      Rails.logger.warn("[Role UPDATE] Failed: \\#{@role.errors.full_messages}")
       render :edit, status: :unprocessable_entity
     end
   end

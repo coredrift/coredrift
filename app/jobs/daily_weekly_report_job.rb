@@ -5,7 +5,7 @@ class DailyWeeklyReportJob < ApplicationJob
     daily_setup = DailySetup.find_by(id: daily_setup_id)
 
     unless daily_setup
-      Rails.logger.warn "[DailyWeeklyReportJob] DailySetup with ID ##{daily_setup_id} not found. Skipping job."
+      Rails.logger.warn "[daily-weekly-report-job] daily setup with ID ##{daily_setup_id} not found. Skipping job."
       return
     end
 
@@ -15,9 +15,9 @@ class DailyWeeklyReportJob < ApplicationJob
     is_weekly_report_day = (current_day_name_sym == weekly_report_day_sym)
 
     if is_weekly_report_day
-      Rails.logger.info "[DailyWeeklyReportJob] Would publish weekly report for DailySetup ##{daily_setup.id}"
+      Rails.logger.info "[daily-weekly-report-job] Would publish weekly report for daily setup ##{daily_setup.id}"
     else
-      Rails.logger.info "[DailyWeeklyReportJob] Skipped for DailySetup ##{daily_setup.id}. Not the designated weekly report day (#{weekly_report_day_sym})."
+      Rails.logger.info "[daily-weekly-report-job] Skipped for daily setup ##{daily_setup.id}. Not the designated weekly report day (#{weekly_report_day_sym})."
     end
   end
 end

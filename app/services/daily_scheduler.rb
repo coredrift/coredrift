@@ -1,6 +1,6 @@
 class DailyScheduler
   def self.check!
-    Rails.logger.info "[DailyScheduler] check! executed successfully."
+    Rails.logger.info "[daily-scheduler] check! executed successfully."
     today = Date.current
     now = Time.current.strftime("%H:%M")
     now_time = Time.zone.parse(now)
@@ -13,11 +13,11 @@ class DailyScheduler
         j.state = "pending"
       end
       if job.previous_changes.any?
-        Rails.logger.info "[Job] Created reminder job ##{job.id} for DailySetup ##{setup.id} at #{scheduled_reminder_time}"
+        Rails.logger.info "[job] Created reminder job ##{job.id} for daily setup ##{setup.id} at #{scheduled_reminder_time}"
       end
       if job.state == "pending" && job.scheduled_for <= Time.current
         job.update!(state: "enqueued")
-        Rails.logger.info "[Job] Enqueued reminder job ##{job.id} for DailySetup ##{setup.id}"
+        Rails.logger.info "[job] Enqueued reminder job ##{job.id} for daily setup ##{setup.id}"
         DailyReminderJob.perform_later(job.id)
       end
 
@@ -27,11 +27,11 @@ class DailyScheduler
         j.state = "pending"
       end
       if job.previous_changes.any?
-        Rails.logger.info "[Job] Created report job ##{job.id} for DailySetup ##{setup.id} at #{scheduled_report_time}"
+        Rails.logger.info "[job] Created report job ##{job.id} for daily setup ##{setup.id} at #{scheduled_report_time}"
       end
       if job.state == "pending" && job.scheduled_for <= Time.current
         job.update!(state: "enqueued")
-        Rails.logger.info "[Job] Enqueued report job ##{job.id} for DailySetup ##{setup.id}"
+        Rails.logger.info "[job] Enqueued report job ##{job.id} for daily setup ##{setup.id}"
         DailyReportJob.perform_later(job.id)
       end
 
@@ -42,11 +42,11 @@ class DailyScheduler
           j.state = "pending"
         end
         if job.previous_changes.any?
-          Rails.logger.info "[Job] Created weekly_report job ##{job.id} for DailySetup ##{setup.id} at #{scheduled_weekly_time}"
+          Rails.logger.info "[job] Created weekly_report job ##{job.id} for daily setup ##{setup.id} at #{scheduled_weekly_time}"
         end
         if job.state == "pending" && job.scheduled_for <= Time.current
           job.update!(state: "enqueued")
-          Rails.logger.info "[Job] Enqueued weekly_report job ##{job.id} for DailySetup ##{setup.id}"
+          Rails.logger.info "[job] Enqueued weekly_report job ##{job.id} for daily setup ##{setup.id}"
           DailyWeeklyReportJob.perform_later(job.id)
         end
       end

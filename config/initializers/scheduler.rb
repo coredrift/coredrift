@@ -9,6 +9,21 @@ return unless defined?(Rails::Server)
 scheduler = Rufus::Scheduler.new
 
 scheduler.every SCHEDULER_INTERVAL do
-  Rails.logger.info "[rufus-scheduler] Running DailyScheduler.check!"
+  Rails.logger.info "[scheduler] running daily scheduler check"
   DailyScheduler.check!
+end
+
+scheduler.every SCHEDULER_INTERVAL do
+  Rails.logger.info "[scheduler] running daily reminder job"
+  DailyReminderJob.perform_later
+end
+
+scheduler.every SCHEDULER_INTERVAL do
+  Rails.logger.info "[scheduler] running daily report job"
+  DailyReportJob.perform_later
+end
+
+scheduler.every SCHEDULER_INTERVAL do
+  Rails.logger.info "[scheduler] running daily weekly report job"
+  DailyWeeklyReportJob.perform_later
 end
