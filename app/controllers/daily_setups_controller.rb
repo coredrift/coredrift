@@ -11,7 +11,7 @@ class DailySetupsController < ApplicationController
     if @daily_setup.save
       redirect_to dash_path, notice: "Daily setup created successfully."
     else
-      flash.now[:alert] = @daily_setup.errors.full_messages.to_sentence.presence || "Could not create daily setup."
+      flash.now[:alert] = @daily_setup.errors.full_messages.to_sentence.presence || "Could not Report setup."
       render :new, status: :unprocessable_entity
     end
   end

@@ -150,7 +150,7 @@ class DailyReminderJobTest < ActiveJob::TestCase
       name: "Default Organization",
       short_description: "Default single-instance organization",
       description: "Default organization for initial setup.",
-      owner_id: @superadmin.id
+      owner_id: @superadmin.id 
     )
 
     OrganizationOwner.create!(

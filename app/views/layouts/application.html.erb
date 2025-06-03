@@ -36,10 +36,9 @@
             </ul>
           <% else %>
             <ul class="flex space-x-5">
-              <%# Eliminado el enlace a Dash del layout incorrecto %>
-              <li><a class="text-white" href="/teams">Core</a></li>
-              <li><a class="text-white" href="/organizations/default">Org</a></li>
-              <li><a class="text-white" href="/users">Auth</a></li>
+              <li><%= link_to 'Core', '/teams', class: 'text-white' %></li>
+              <li><%= link_to 'Org', '/organizations/default', class: 'text-white' %></li>
+              <li><%= link_to 'Auth', '/users', class: 'text-white' %></li>
             </ul>
           <% end %>
         </nav>
