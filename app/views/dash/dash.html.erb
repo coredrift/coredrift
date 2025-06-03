@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
   <% if current_user.role == 'team_lead' %>
     <div class="bg-white shadow-md rounded p-4">
-      <h2 class="text-lg font-bold mb-2">Team Lead</h2>
+      <h2 class="text-lg font-bold mb-2">Setups</h2>
       <div class="team-widget space-y-4">
         <% @teams.each do |team| %>
           <% if team.daily_setup.present? %>
@@ -15,14 +15,14 @@
                   <%= team.daily_setup.details %>
                 </div>
               </div>
-              <div class="mt-4 text-right">
+              <div class="mt-4 flex justify-end gap-2">
                 <%= link_to 'Edit', edit_daily_setup_path(team.daily_setup), class: 'bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded' %>
               </div>
             </div>
           <% else %>
             <div class="border rounded p-4 bg-gray-50 flex flex-col justify-between min-h-[180px]">
               <div>
-                <p>Hey! Let’s set up your daily standup, just once and done.</p>
+                <p>Hey! Let's set up your daily standup, just once and done.</p>
               </div>
               <div class="mt-4 text-right">
                 <%= link_to 'New', new_team_daily_setup_path(team), class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
@@ -36,12 +36,12 @@
 
   <% if ['team_lead', 'software_engineer', 'designer', 'product_owner', 'qa_engineer', 'devops_engineer', 'scrum_master', 'business_analyst'].include?(current_user.role) %>
     <div class="bg-white shadow-md rounded p-4">
-      <h2 class="text-lg font-bold mb-2">Team Member</h2>
+      <h2 class="text-lg font-bold mb-2">Updates</h2>
       <div class="space-y-4">
         <% @teams.each do |team| %>
           <% daily_setup = team.daily_setup %>
           <% next unless daily_setup %>
-          <% daily = Daily.find_by(user_id: current_user.id, team_id: team.id, date: Date.current) %>
+          <% daily = team.dailies.find_by(date: Date.current, daily_setup: daily_setup) %>
           <div class="border rounded p-4 bg-gray-50 flex flex-col justify-between min-h-[180px]">
             <div>
               <div class="mb-2">
@@ -62,21 +62,40 @@
                 <div class="text-gray-500 italic">No daily submitted yet for today.</div>
               <% end %>
             </div>
-            <div class="mt-4 text-right">
+            <div class="mt-4 flex justify-end gap-2">
               <% if daily %>
                 <%= link_to 'Edit', edit_daily_path(daily), class: 'bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded' %>
               <% else %>
-                <%= link_to 'Create Daily', new_daily_path(daily_setup_id: daily_setup.id), class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
+                <%= link_to 'New', new_daily_path(daily_setup_id: daily_setup.id), class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
               <% end %>
             </div>
           </div>
         <% end %>
       </div>
     </div>
-
-    <div class="bg-white shadow-md rounded p-4">
-      <h2 class="text-lg font-bold mb-2">Misc</h2>
-      <p>Content for the Misc block goes here.</p>
-    </div>
   <% end %>
+
+  <div class="bg-white shadow-md rounded p-4 <%= 'md:col-span-2' unless current_user.role == 'team_lead' %>">
+    <h2 class="text-lg font-bold mb-2">Reports</h2>
+    <div class="space-y-4">
+      <% @teams.each do |team| %>
+        <% next unless team.daily_setup %>
+        <% report = team.daily_reports.find_by(date: Date.current) %>
+        <div class="border rounded p-4 bg-gray-50">
+          <div class="mb-2">
+            <span class="font-bold text-blue-700"><%= team.name %></span>
+            <span class="text-gray-500 ml-2">(<%= team.daily_setup.name %>)</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600"><%= Date.current.strftime('%A, %B %d') %></span>
+            <% if report&.published_at %>
+              <%= link_to 'View', team_daily_report_path(team_id: team.id, id: report.id), class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' %>
+            <% else %>
+              <%= link_to 'View', team_daily_report_path(team_id: team.id, id: report.id), class: 'bg-gray-300 hover:bg-gray-400 text-gray-600 font-bold py-2 px-4 rounded' %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>

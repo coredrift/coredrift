@@ -61,6 +61,7 @@ Rails.application.routes.draw do
       delete "member_roles/:user_id/remove/:role_id", to: "teams#remove_contextual_role", as: :remove_contextual_role
     end
     resources :daily_setups, only: [ :new, :create, :edit, :update ], shallow: true
+    resources :daily_reports, only: [ :index, :show ]
 
     # Dailies nested under teams for index/new/create, shallow routes
     resources :dailies, only: [ :index, :new, :create ], shallow: true
@@ -85,8 +86,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  root "home#index"
-  # root "posts#index"
+  root "dash#dash"
 
   get "/dash",               to: "dash#dash"
   get "/dash/add_member",    to: "dash#add_member",    as: "add_member_dash"

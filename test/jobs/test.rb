@@ -6,7 +6,7 @@ class DailyReminderJobTest < ActiveJob::TestCase
   include ActionMailer::TestHelper
 
   test "skips job if day is not active" do
-    travel_to Time.zone.parse("2025-06-02 09:00") do # lunes
+    travel_to Time.zone.parse("2025-06-02 09:00") do # Monday
       job, _ = build_reminder_job_for(day: :monday, active: false)
 
       perform_enqueued_jobs do
@@ -18,7 +18,7 @@ class DailyReminderJobTest < ActiveJob::TestCase
   end
 
   test "sends mail to each user if day is active" do
-    travel_to Time.zone.parse("2025-06-02 09:00") do # lunes
+    travel_to Time.zone.parse("2025-06-02 09:00") do # Monday
       job, _ = build_reminder_job_for(day: :monday, active: true)
 
       assert_emails 1 do

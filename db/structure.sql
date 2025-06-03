@@ -86,25 +86,47 @@ FOREIGN KEY ("team_id")
 );
 CREATE UNIQUE INDEX "index_daily_setups_on_team_id" ON "daily_setups" ("team_id") /*application='CoreDrift'*/;
 CREATE UNIQUE INDEX "index_daily_setups_on_slug" ON "daily_setups" ("slug") /*application='CoreDrift'*/;
-CREATE TABLE IF NOT EXISTS "dailies" ("id" uuid NOT NULL PRIMARY KEY, "user_id" uuid NOT NULL, "team_id" uuid NOT NULL, "daily_setup_id" uuid NOT NULL, "date" date NOT NULL, "visible_at" datetime(6) NOT NULL, "reminder_at" time NOT NULL, "daily_report_time" time NOT NULL, "freeform" text, "yesterday" text, "today" text, "blockers" text, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_7d94e0b7bc"
-FOREIGN KEY ("user_id")
-  REFERENCES "users" ("id")
-, CONSTRAINT "fk_rails_0e73d48216"
-FOREIGN KEY ("team_id")
-  REFERENCES "teams" ("id")
-, CONSTRAINT "fk_rails_1531978b37"
-FOREIGN KEY ("daily_setup_id")
-  REFERENCES "daily_setups" ("id")
-);
-CREATE INDEX "index_dailies_on_user_id" ON "dailies" ("user_id") /*application='CoreDrift'*/;
-CREATE INDEX "index_dailies_on_team_id" ON "dailies" ("team_id") /*application='CoreDrift'*/;
-CREATE INDEX "index_dailies_on_daily_setup_id" ON "dailies" ("daily_setup_id") /*application='CoreDrift'*/;
-CREATE UNIQUE INDEX "index_dailies_on_team_id_and_date" ON "dailies" ("team_id", "date") /*application='CoreDrift'*/;
-CREATE UNIQUE INDEX "index_dailies_on_user_date_setup" ON "dailies" ("user_id", "date", "daily_setup_id") /*application='CoreDrift'*/;
 CREATE TABLE IF NOT EXISTS "jobs" ("id" uuid NOT NULL PRIMARY KEY, "job_type" varchar NOT NULL, "target_id" uuid NOT NULL, "scheduled_for" datetime(6) NOT NULL, "state" varchar DEFAULT 'pending' NOT NULL, "executed_at" datetime(6), "error_message" text, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 CREATE INDEX "index_jobs_on_target_id" ON "jobs" ("target_id") /*application='CoreDrift'*/;
 CREATE UNIQUE INDEX "index_jobs_on_job_type_and_target_id_and_scheduled_for" ON "jobs" ("job_type", "target_id", "scheduled_for") /*application='CoreDrift'*/;
+CREATE TABLE IF NOT EXISTS "daily_reports" ("id" uuid NOT NULL PRIMARY KEY, "daily_setup_id" uuid NOT NULL, "team_id" uuid NOT NULL, "date" date NOT NULL, "status" varchar DEFAULT 'active' NOT NULL, "published_at" datetime(6), "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_71f1442fdb"
+FOREIGN KEY ("daily_setup_id")
+  REFERENCES "daily_setups" ("id")
+, CONSTRAINT "fk_rails_036bd75579"
+FOREIGN KEY ("team_id")
+  REFERENCES "teams" ("id")
+);
+CREATE INDEX "index_daily_reports_on_daily_setup_id" ON "daily_reports" ("daily_setup_id") /*application='CoreDrift'*/;
+CREATE INDEX "index_daily_reports_on_team_id" ON "daily_reports" ("team_id") /*application='CoreDrift'*/;
+CREATE UNIQUE INDEX "index_daily_reports_on_daily_setup_id_and_date" ON "daily_reports" ("daily_setup_id", "date") /*application='CoreDrift'*/;
+CREATE TABLE IF NOT EXISTS "dailies" (
+  "id"  NOT NULL PRIMARY KEY,
+  "user_id" uuid NOT NULL,
+  "team_id"  NOT NULL,
+  "daily_setup_id"  NOT NULL,
+  "date" date NOT NULL,
+  "visible_at" datetime(6) NOT NULL,
+  "reminder_at" time NOT NULL,
+  "daily_report_time" time NOT NULL,
+  "freeform" text,
+  "yesterday" text,
+  "today" text,
+  "blockers" text,
+  "created_at" datetime(6) NOT NULL,
+  "updated_at" datetime(6) NOT NULL,
+  "daily_report_id" ,
+  CONSTRAINT "fk_rails_1531978b37" FOREIGN KEY ("daily_setup_id") REFERENCES "daily_setups" ("id"),
+  CONSTRAINT "fk_rails_0e73d48216" FOREIGN KEY ("team_id") REFERENCES "teams" ("id"),
+  CONSTRAINT "fk_rails_3cf38b4ca8" FOREIGN KEY ("daily_report_id") REFERENCES "daily_reports" ("id"),
+  CONSTRAINT "fk_rails_758836b4f0" FOREIGN KEY ("user_id") REFERENCES "users" ("id")
+);
+CREATE INDEX "index_dailies_on_team_id" ON "dailies" ("team_id") /*application='CoreDrift'*/;
+CREATE INDEX "index_dailies_on_daily_setup_id" ON "dailies" ("daily_setup_id") /*application='CoreDrift'*/;
+CREATE UNIQUE INDEX "index_dailies_on_user_date_setup" ON "dailies" ("user_id", "date", "daily_setup_id") /*application='CoreDrift'*/;
+CREATE INDEX "index_dailies_on_daily_report_id" ON "dailies" ("daily_report_id") /*application='CoreDrift'*/;
+CREATE INDEX "index_dailies_on_user_id" ON "dailies" ("user_id") /*application='CoreDrift'*/;
 INSERT INTO "schema_migrations" (version) VALUES
+('20250603132445'),
 ('20250525204549'),
 ('20250514205611'),
 ('20250514142620'),

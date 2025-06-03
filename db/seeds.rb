@@ -167,7 +167,7 @@ num_teams.times do |i|
     ds.description = "Daily setup for team #{team_n}"
     ds.visible_at = '09:30'
     ds.reminder_at = '08:00'
-    ds.daily_report_time = '10:30'
+    ds.daily_report_time = '23:59'
     ds.weekly_report_day = 'fri'
     ds.weekly_report_time = '17:00'
     ds.template = 'freeform'
@@ -178,7 +178,9 @@ num_teams.times do |i|
 end
 
 # ─── Print Superadmin Credentials ───────────────────────────────────────────
-line = "Superadmin login → username: superadmin | password: #{superadmin_password}"
-puts "\n\n\e[32m#{line}\e[0m"
+daily_setup_ids = DailySetup.all.map { |ds| "#{ds.team.name} daily setup → id: #{ds.id}" }
+output = [ "Superadmin login → username: superadmin | password: #{superadmin_password}" ] + daily_setup_ids
 
-File.open('seed.out', 'w') { |f| f.puts line }
+puts "\n\n\e[32m#{output.join("\n")}\e[0m"
+
+File.open('seed.out', 'w') { |f| f.puts output.join("\n") }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <style>
+    .daily-entry { margin: 20px 0; padding: 15px; border: 1px solid #eee; }
+    .user-name { font-weight: bold; margin-bottom: 10px; }
+    .section { margin: 10px 0; }
+    .section-title { font-weight: bold; color: #666; }
+    .missing-users { color: #999; font-style: italic; }
+  </style>
+</head>
+<body>
+  <h1>Daily Summary - <%= @team.name %></h1>
+  <p><%= @date.strftime('%A, %B %d') %></p>
+
+  <% if @daily_setup.description.present? %>
+    <div style="margin: 20px 0; padding: 10px; background: #f9f9f9;">
+      <%= @daily_setup.description %>
+    </div>
+  <% end %>
+
+  <div>
+    <h2>Team Updates</h2>
+    
+    <% @dailies.each do |daily| %>
+      <div class="daily-entry">
+        <div class="user-name">Team Member Update</div>
+        
+        <% if daily.freeform.present? %>
+          <div class="section">
+            <div class="section-title">Update:</div>
+            <p style="white-space: pre-wrap;"><%= daily.freeform %></p>
+          </div>
+        <% else %>
+          <% if daily.yesterday.present? %>
+            <div class="section">
+              <div class="section-title">Yesterday:</div>
+              <p style="white-space: pre-wrap;"><%= daily.yesterday %></p>
+            </div>
+          <% end %>
+          
+          <% if daily.today.present? %>
+            <div class="section">
+              <div class="section-title">Today:</div>
+              <p style="white-space: pre-wrap;"><%= daily.today %></p>
+            </div>
+          <% end %>
+          
+          <% if daily.blockers.present? %>
+            <div class="section">
+              <div class="section-title">Blockers:</div>
+              <p style="white-space: pre-wrap;"><%= daily.blockers %></p>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @missing_users.any? %>
+      <div style="margin-top: 30px;">
+        <h3>Missing Updates</h3>
+        <p class="missing-users">
+          The following team members haven't submitted their update:
+          <%= @missing_users.map(&:name).join(", ") %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+
+  <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 0.9em;">
+    <p>This is an automated message from your team's daily setup system.</p>
+  </div>
+</body>
+</html>

@@ -6,6 +6,17 @@ class DailyScheduler
     DailySetup.where(active: true).find_each do |setup|
       next unless should_enqueue_for_day?(setup, current_time)
       
+      # Create daily report at the start of each day
+      begin
+        DailyReport.find_or_create_by!(daily_setup: setup, team: setup.team, date: Date.current) do |report|
+          report.status = 'active'
+          Rails.logger.info "[daily-scheduler] Created new daily report for setup ##{setup.id} for date #{Date.current}"
+        end
+      rescue => e
+        Rails.logger.error "[daily-scheduler] Failed to create daily report for setup ##{setup.id}: #{e.message}"
+        next
+      end
+
       if Rules.should_enqueue_reminder?(setup, current_time)
         scheduled_reminder_time = Time.zone.parse("#{current_time.to_date} #{setup.reminder_at}")
         job = Job.find_or_create_by!(job_type: "reminder", target_id: setup.id, scheduled_for: scheduled_reminder_time) do |j|

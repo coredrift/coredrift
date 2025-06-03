@@ -1,0 +1,41 @@
+Daily Summary - <%= @team.name %>
+<%= @date.strftime('%A, %B %d') %>
+
+<% if @daily_setup.description.present? %>
+<%= @daily_setup.description %>
+
+<% end %>
+Team Updates:
+
+<% @dailies.each do |daily| %>
+* Team Member Update
+<% if daily.freeform.present? %>
+Update:
+<%= daily.freeform %>
+<% else %>
+<% if daily.yesterday.present? %>
+Yesterday:
+<%= daily.yesterday %>
+<% end %>
+
+<% if daily.today.present? %>
+Today:
+<%= daily.today %>
+<% end %>
+
+<% if daily.blockers.present? %>
+Blockers:
+<%= daily.blockers %>
+<% end %>
+<% end %>
+
+<% end %>
+<% if @missing_users.any? %>
+
+Missing Updates:
+The following team members haven't submitted their update:
+<%= @missing_users.map(&:name).join(", ") %>
+<% end %>
+
+--
+This is an automated message from your team's daily setup system.

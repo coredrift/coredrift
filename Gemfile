@@ -67,6 +67,9 @@ group :development do
 
   # Preview mail in the browser instead of sending it [https://github.com/ryanb/letter_opener]
   gem "letter_opener"
+
+  # Ruby style guide, linter, and formatter [https://github.com/testdouble/standard]
+  gem "standard", require: false
 end
 
 group :test do

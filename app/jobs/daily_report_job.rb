@@ -23,7 +23,31 @@ class DailyReportJob < ApplicationJob
         return
       end
 
-      Rails.logger.info "[daily-report-job] Would publish daily report for daily setup ##{daily_setup.id}"
+      team = daily_setup.team
+      daily_report = DailyReport.find_or_create_by!(
+        daily_setup: daily_setup,
+        team: team,
+        date: Date.current
+      )
+
+      dailies = team.dailies.where(
+        date: Date.current,
+        daily_setup_id: daily_setup.id
+      ).to_a
+
+      Daily.where(id: dailies.map(&:id)).update_all(daily_report_id: daily_report.id)
+
+      team_users = team.users.to_a
+      reported_teams = dailies.map(&:team).uniq
+      missing_users = team_users.reject { |u| reported_teams.any? { |t| t.users.include?(u) } }
+
+      team.users.find_each do |user|
+        DailyReportMailer.daily_summary(user, team, daily_setup, dailies, missing_users).deliver_later
+      end
+
+      daily_report.publish!
+
+      Rails.logger.info "[daily-report-job] Daily report sent and published for team ##{team.id}"
       job.update!(state: "completed", executed_at: Time.current)
     rescue => e
       job.update!(state: "failed", error_message: e.message)

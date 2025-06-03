@@ -1,0 +1,48 @@
+<%# Daily Reports List View %>
+<div class="max-w-6xl mx-auto bg-white px-8 py-6 mb-4">
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-2xl font-bold">Daily Reports</h1>
+      <p class="text-gray-600"><%= @date.strftime('%A, %B %d') %></p>
+    </div>
+
+    <%# Date Selector %>
+    <div class="flex items-center gap-4">
+      <%= link_to daily_reports_path(date: @date - 1.day), class: "text-blue-500 hover:text-blue-700" do %>
+        <span class="text-2xl">&larr;</span> Previous Day
+      <% end %>
+      
+      <%= form_tag daily_reports_path, method: :get, class: "flex items-center gap-2" do %>
+        <%= date_field_tag :date, @date, class: "shadow border rounded py-1 px-2" %>
+        <%= submit_tag "Go", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded" %>
+      <% end %>
+
+      <% if @date < Date.current %>
+        <%= link_to daily_reports_path(date: @date + 1.day), class: "text-blue-500 hover:text-blue-700" do %>
+          Next Day <span class="text-2xl">&rarr;</span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    <% if @daily_reports.any? %>
+      <% @daily_reports.each do |report| %>
+        <div class="border rounded p-4 bg-gray-50">
+          <div class="mb-2">
+            <span class="font-bold text-blue-700"><%= report.team.name %></span>
+            <span class="text-gray-500 ml-2">(<%= report.daily_setup.name %>)</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Published: <%= report.published_at.strftime('%H:%M') %></span>
+            <%= link_to 'View Report', daily_report_path(report), class: 'text-blue-500 hover:text-blue-700 text-sm' %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="text-center py-8 text-gray-500">
+        <p>No reports published for this date.</p>
+      </div>
+    <% end %>
+  </div>
+</div>

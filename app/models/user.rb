@@ -20,6 +20,8 @@ class User < ApplicationRecord
   has_many :team_memberships, dependent: :destroy
   has_many :teams, through: :team_memberships
 
+  has_many :dailies, dependent: :destroy
+
   after_save :update_session_stamp_if_permissions_changed
 
   def effective_permissions
@@ -54,7 +56,16 @@ class User < ApplicationRecord
 
   # Check if the user is a superadmin based on their username
   def superadmin?
-    username == 'superadmin'
+    username == "superadmin"
+  end
+
+  # Returns a hash of team_id => [users] for teams where this user is a member
+  def team_members_grouped_by_team
+    team_ids = teams.pluck(:id)
+    TeamMembership.where(team_id: team_ids)
+                 .includes(:user)
+                 .group_by(&:team_id)
+                 .transform_values { |memberships| memberships.map(&:user) }
   end
 
   private
