@@ -2,6 +2,8 @@
 
 Below are additional screenshots of the application UI and features:
 
+- **Daily Summary**
+  ![Daily Summary](img/gallery/daily-summary.png)
 - **List Users**
   ![List Users](img/gallery/list-users.png)
 - **Show User**
@@ -14,7 +16,7 @@ Below are additional screenshots of the application UI and features:
   ![List Resources](img/gallery/list-resources.png)
 - **List Resource Permissions**
   ![List Resource Permissions](img/gallery/list-resource-permissions.png)
-- **Show Organization**
-  ![Show Organization](img/gallery/show-organization.png)
+- **Show Org**
+  ![Show Org](img/gallery/show-org.png)
 - **Dash**
   ![Dash](img/gallery/dash.png)

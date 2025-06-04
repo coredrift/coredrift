@@ -8,7 +8,7 @@ CoreDrift is an async daily stand-up facilitator for distributed teams. It lets 
 
 A sample screenshot of the app:
 
-![List User Permissions](docs/img/gallery/list-user-permissions.png)
+![Dashboard](docs/img/gallery/dash.png)
 
 [See more screenshots in the gallery...](docs/gallery.md)
 
