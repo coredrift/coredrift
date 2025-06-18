@@ -43,7 +43,7 @@ gem "loofah", "2.24.1"
 gem "psych", "5.2.6"
 gem "rack", "3.1.15"
 gem "rails-dom-testing", "2.3.0"
-gem "rdoc", "6.14.0"
+gem "rdoc", "6.14.1"
 gem "zeitwerk", "2.7.3"
 gem "erb", "5.0.1"
 
